@@ -1,0 +1,32 @@
+{
+  "formatVersion": 1,
+  "slug": "plain",
+  "name": "Plain",
+  "aliases": [],
+  "logo": "assets/logo.svg",
+  "defaultTheme": "white",
+  "themes": [
+    { "value": "white", "label": "White", "hero": false, "bloom": false },
+    { "value": "silver", "label": "Silver", "hero": false, "bloom": false },
+    { "value": "graphite", "label": "Graphite", "hero": true, "bloom": false }
+  ],
+  "classifications": ["SECRET", "PRIVATE", "OPEN", "none"],
+  "defaultClassification": "PRIVATE",
+  "fonts": [],
+  "guard": {
+    "palette": {
+      "paper": [255, 255, 255],
+      "silver": [229, 229, 229],
+      "graphite": [38, 38, 38],
+      "coal": [28, 28, 28],
+      "steel": [74, 74, 74],
+      "ash": [209, 209, 209]
+    },
+    "neutrals": ["paper", "silver", "graphite", "coal", "steel", "ash"],
+    "vivids": [],
+    "lightNeutral": "paper",
+    "darkNeutral": "coal",
+    "themeBg": { "white": "paper", "silver": "silver", "graphite": "graphite" },
+    "themeText": { "white": "coal", "silver": "coal", "graphite": "paper" }
+  }
+}
