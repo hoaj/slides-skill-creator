@@ -36,6 +36,10 @@ _Avoid_: discovery, questionnaire, brief
 A Brand pack's recipe for one kind of presentation that the brand makes repeatedly.
 _Avoid_: template, deck category, preset
 
+**Sample deck**:
+The Engine's neutral deck, built for any Brand pack to show its themes, layouts and features.
+_Avoid_: test deck, demo deck, preview deck
+
 **Upgrade**:
 Moving a Slides skill to a newer Engine release.
 _Avoid_: sync, update, bump
