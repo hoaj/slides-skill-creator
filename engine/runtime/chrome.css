@@ -1,0 +1,21 @@
+/* === PERSISTENT SLIDE FRAME ===
+   One layer inside .deck-stage, identical on every slide: logo, date, page number,
+   classification and header. The controller copies the active slide's data-theme onto
+   .deck-frame, so everything here inherits a legible --text on every theme. It is not
+   .deck-chrome (the browser-only toolbar and panels), so it still prints. The logo width
+   is the Brand pack's --logo-w token, and the date offset derives from it so the two
+   never collide. */
+.deck-frame { position:absolute; inset:0; z-index:2; pointer-events:none;
+  color:var(--text); font-family:var(--font-body); }
+.deck-frame > * { position:absolute; }
+
+.deck-logo { left:46px; bottom:31px; width:var(--logo-w); color:var(--logo-color, var(--text)); }
+.deck-logo svg { width:100%; height:auto; display:block; }
+
+.deck-date { left:calc(46px + var(--logo-w) + 275px); bottom:34px; font-size:20px; line-height:1; color:var(--text); white-space:nowrap; }
+.deck-pagenum { right:46px; bottom:34px; font-size:20px; line-height:1; color:var(--text); }
+
+.deck-classification { right:30px; top:12px; font-weight:400; font-size:24px;
+  color:var(--text); }
+.deck-header { right:30px; top:46px; font-size:20px; color:var(--text); opacity:.8; }
+.deck-classification:empty, .deck-header:empty { display:none; }

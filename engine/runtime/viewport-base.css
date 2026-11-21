@@ -1,0 +1,94 @@
+/* === FIXED 16:9 STAGE — include verbatim in every deck.
+   Slides authored at 1920×1080; the whole stage scales as one unit. === */
+html, body { width:100%; height:100%; margin:0; overflow:hidden; background:#000; }
+* { box-sizing: border-box; }
+
+.deck-viewport { position:fixed; inset:0; overflow:hidden; background:#000; }
+
+.deck-stage {
+  position:absolute; left:0; top:0; width:1920px; height:1080px;
+  overflow:hidden; transform-origin:0 0; background:var(--bg);
+}
+
+.slide {
+  position:absolute; inset:0; width:1920px; height:1080px; overflow:hidden;
+  display:block; visibility:hidden; opacity:0; pointer-events:none;
+  background:var(--bg); color:var(--text);
+  font-family:var(--font-body); padding:var(--pad);
+}
+.slide.active, .slide.visible { visibility:visible; opacity:1; pointer-events:auto; z-index:1; }
+
+/* Full-bleed background layer inside a slide (behind .slide-content) */
+.slide-bg { position:absolute; inset:0; z-index:0; }
+.slide-content { position:relative; z-index:1; width:100%; height:100%; }
+/* Vertically center a slide's content. Recommended default for content slides;
+   drop it to top-align dense slides (large grids, long transcripts). */
+.slide-content.center { display:flex; flex-direction:column; justify-content:center; gap:var(--space-lg); }
+/* Default vertical rhythm so stacked blocks never touch even when the author
+   forgets to space them. Authors override per slide with their own gap; group a
+   kicker + heading in one wrapper (e.g. .stack-tight) so they stay coupled. */
+.stack-tight { display:flex; flex-direction:column; gap:var(--space-xs); }
+
+/* Card row: cards side by side share one height, and their parts line up across the
+   row (every title, tag and body starts at the same y, even when one title wraps).
+   Each .card spans --card-parts rows of the row's grid as a subgrid, so the tallest
+   title sets the title row for every card. Give every card the same parts in the
+   same order; set --cols (default 3) and --card-parts (default 3) on the row. */
+.card-row { display:grid; grid-template-columns:repeat(var(--cols, 3), 1fr); gap:var(--gap); }
+.card-row > .card { display:grid; grid-template-rows:subgrid; grid-row:span var(--card-parts, 3);
+  row-gap:var(--space-sm); padding:var(--pad-card);
+  background:var(--surface); border-radius:var(--radius); }
+
+/* Reset UA margins so authored spacing (gap / margin-top) is exact and a heading's
+   default top margin can't escape the slide and overflow the fixed stage.
+   Wrapped in :where() so the reset has ZERO specificity — any author rule
+   (even a single class like .my-banner{margin-top:64px}) overrides it naturally. */
+:where(.slide) :where(h1, h2, h3, h4, h5, p, ul, ol, li, blockquote, figure) { margin:0; }
+
+img, video, canvas, svg { max-width:100%; max-height:100%; }
+
+/* Reveal animation: children with .reveal rise+fade when the slide is .visible */
+.reveal { opacity:0; transform:translateY(36px);
+  transition:opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.slide.visible .reveal { opacity:1; transform:translateY(0); }
+.slide.visible .reveal:nth-child(1){transition-delay:.08s}
+.slide.visible .reveal:nth-child(2){transition-delay:.18s}
+.slide.visible .reveal:nth-child(3){transition-delay:.28s}
+.slide.visible .reveal:nth-child(4){transition-delay:.38s}
+.slide.visible .reveal:nth-child(5){transition-delay:.48s}
+.slide.visible .reveal:nth-child(6){transition-delay:.58s}
+
+/* Chrome (toolbar, panel, counter) lives outside the scaled stage */
+.deck-chrome { position:fixed; z-index:1000; font-family:var(--font-body); }
+
+/* PDF export prep (set by the controller before window.print()): every slide is made
+   .visible at once so the .slide.visible animations resolve, and ALL transitions/
+   animations are killed so the end-state is reached instantly — no mid-animation
+   frame is captured. The single persistent chrome is hidden in favour of the
+   per-slide .deck-frame--print clones the controller injects. */
+body.deck-pdf-export *, body.deck-pdf-export *::before, body.deck-pdf-export *::after {
+  transition:none !important; animation:none !important;
+}
+body.deck-pdf-export .deck-stage > .deck-frame { display:none !important; }
+
+@media print {
+  /* keep theme colours, gradients and dark backgrounds — browsers strip them otherwise */
+  *, *::before, *::after { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+  @page { size:1920px 1080px; margin:0; }
+  html, body { width:1920px; height:auto; overflow:visible; background:#fff; }
+  .deck-viewport { position:static; overflow:visible; background:#fff; }
+  .deck-stage { position:static; width:auto; height:auto; transform:none !important; background:none; }
+  .slide { position:relative; display:block !important; visibility:visible !important;
+    opacity:1 !important; pointer-events:auto !important; width:1920px; height:1080px;
+    break-after:page; page-break-after:always; break-inside:avoid; }
+  .slide:last-child { break-after:auto; page-break-after:auto; }
+  .slide .reveal { opacity:1 !important; transform:none !important; }
+  .slide [data-step] { opacity:1 !important; filter:none !important; }  /* build-steps in end-state */
+  .deck-frame--print { display:block !important; }                       /* per-page chrome clones */
+  .deck-chrome { display:none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:0.01ms !important; animation-iteration-count:1 !important;
+    transition-duration:0.2s !important; }
+}
