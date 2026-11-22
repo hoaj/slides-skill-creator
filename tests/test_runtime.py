@@ -23,7 +23,7 @@ class NoBrandValuesTest(unittest.TestCase):
                 self.assertIn(name, ALLOWED_FALLBACKS, f"{css.name}: fallback on {name}")
 
     def test_every_runtime_token_is_set_by_the_plain_pack(self):
-        from lib.packs import CSS_VAR_DECLARED, required_tokens
+        from lib.validate import CSS_VAR_DECLARED, required_tokens
         tokens = (ENGINE / "fixtures/plain/tokens.css").read_text(encoding="utf-8")
         declared = set(CSS_VAR_DECLARED.findall(CSS_COMMENT.sub("", tokens)))
         needed = required_tokens()

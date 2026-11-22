@@ -5,6 +5,7 @@
     headline count: a headline counts the items below it ("Five requirements ...")
     kicker:         the label above a headline repeats the headline
     number format:  a number is not in the Brand pack's numberFormat
+    markup:         a slide's <div> tags do not balance, so a card has left its grid
 """
 import html as htmllib
 import re
@@ -153,6 +154,16 @@ def number_format_warnings(html, nf):
     return warnings
 
 
+def markup_warnings(html):
+    """A mis-counted </div> drops a card out of its grid, and no overflow check sees it."""
+    warnings = []
+    for n, title, body in slides(html):
+        balance = len(re.findall(r"<div\b", body)) - len(re.findall(r"</div>", body))
+        if balance:
+            warnings.append(f'slide {n} "{title}": <div> tags are off by {balance:+d}')
+    return warnings
+
+
 def text_warnings(html, manifest):
     """Every slide-text check, as (kind, message) pairs."""
     stage = re.search(r'<[^>]*\bid="deckStage"[^>]*>', html)
@@ -162,4 +173,5 @@ def text_warnings(html, manifest):
     out += [("headline count", w) for w in headline_count_warnings(html, lang)]
     out += [("kicker", w) for w in kicker_warnings(html)]
     out += [("number format", w) for w in number_format_warnings(html, manifest.get("numberFormat"))]
+    out += [("markup", w) for w in markup_warnings(html)]
     return out

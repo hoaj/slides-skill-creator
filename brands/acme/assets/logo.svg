@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 40" role="img" aria-label="Acme">
+  <path fill="currentColor" d="M20 2 38 37H27.5L20 21.5 12.5 37H2Z"/>
+  <g fill="none" stroke="currentColor" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M67 15.5v19M67 25a9.2 9.2 0 1 1-18.4 0 9.2 9.2 0 0 1 18.4 0Z"/>
+    <path d="M94 18.4a9.2 9.2 0 1 0 0 13.2"/>
+    <path d="M104 34.500v-19M104 25c0-5.500 2.800-9 7-9s6.500 3 6.500 8v10.500M117.500 24.500c0-5 2.700-8.500 7-8.500s6.500 3 6.500 8v10.500"/>
+    <path d="M142 25h17.800a9 9 0 1 0-2.800 7"/>
+  </g>
+</svg>

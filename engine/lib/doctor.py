@@ -27,7 +27,10 @@ ENGINE_FILES = ("viewport-base.css", "widgets.css", "chrome.css", "widgets.js",
 OPTIONAL = (("pptx", "python-pptx", "export-pptx and extract-pptx"),
             ("playwright", "playwright", "export-pptx"),
             ("fontTools", "fonttools", "PowerPoint font mapping for packs with font files"),
-            ("brotli", "brotli", "reading woff2 font files"))
+            ("brotli", "brotli", "reading woff2 font files"),
+            ("numpy", "numpy", "compare"),
+            ("fitz", "pymupdf", "compare"),
+            ("PIL", "pillow", "compare"))
 BROWSERS = (("Google Chrome", "Google Chrome.app", r"Google\Chrome\Application\chrome.exe",
              ("google-chrome", "google-chrome-stable")),
             ("Microsoft Edge", "Microsoft Edge.app", r"Microsoft\Edge\Application\msedge.exe",

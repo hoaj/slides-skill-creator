@@ -1,0 +1,72 @@
+/* === ACME: the example Brand pack ===
+   A fictional brand. Semantic tokens remap per theme through [data-theme] on .deck-stage
+   (deck-wide) or a .slide (per slide). */
+:root {
+  --acme-paper: #FFFFFF;
+  --acme-mist: #EEF1F7;
+  --acme-ink: #14213D;
+  --acme-cobalt: #2447D8;
+  --acme-sun: #FFC233;
+  --acme-dusk: #2A1458;
+  --acme-coral: #FF7A59;
+  --acme-teal: #0F766E;
+
+  --font-display: "Public Sans", Arial, Helvetica, sans-serif;
+  --font-body: "Public Sans", Arial, Helvetica, sans-serif;
+
+  --fs-hero: 112px; --fs-title: 80px; --fs-h1: 60px; --fs-h2: 44px; --fs-h3: 34px;
+  --fs-body: 27px; --fs-caption: 20px;
+
+  --pad: 104px; --gap: 42px; --radius: 16px;
+  --chrome-top: 72px; --chrome-bottom: 92px;
+
+  --space-xs: 10px; --space-sm: 18px; --space-md: 26px; --space-lg: 42px; --space-xl: 68px;
+  --pad-card: 38px;
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1); --dur: 0.5s;
+
+  --series-1: #2447D8; --series-2: #0F766E; --series-3: #C2410C;
+  --series-4: #6D2E8C; --series-5: #475569; --series-6: #B7791F;
+  --on-series: #FFFFFF;
+
+  /* The browser UI: toolbar, panel, hints, overview. */
+  --ui-accent: var(--acme-cobalt);
+  --ui-on-accent: var(--acme-paper);
+  --ui-ink: var(--acme-ink);
+  --ui-warn: var(--acme-sun);
+  --ui-danger: #F2B8A8;
+
+  --logo-w: 170px;
+}
+
+[data-theme="paper"], .deck-stage:not([data-theme]) {
+  --bg: var(--acme-paper); --surface: var(--acme-mist); --text: var(--acme-ink);
+  --muted: #4C5A73; --accent: var(--acme-cobalt); --on-accent: var(--acme-paper);
+  --hairline: rgba(20, 33, 61, .16);
+}
+[data-theme="mist"] {
+  --bg: var(--acme-mist); --surface: var(--acme-paper); --text: var(--acme-ink);
+  --muted: #465470; --accent: var(--acme-cobalt); --on-accent: var(--acme-paper);
+  --hairline: rgba(20, 33, 61, .18);
+}
+[data-theme="ink"] {
+  --bg: var(--acme-ink); --surface: #24335A; --text: var(--acme-paper);
+  --muted: #B9C4DC; --accent: var(--acme-sun); --on-accent: var(--acme-ink);
+  --hairline: rgba(255, 255, 255, .22);
+}
+[data-theme="cobalt"] {
+  --bg: var(--acme-cobalt); --surface: #1B38B4; --text: var(--acme-paper);
+  --muted: #B4C3F5; --accent: var(--acme-sun); --on-accent: var(--acme-ink);
+  --hairline: rgba(255, 255, 255, .28);
+}
+[data-theme="sun"] {
+  --bg: var(--acme-sun); --surface: #FFE3A1; --text: var(--acme-ink);
+  --muted: #47390F; --accent: var(--acme-ink); --on-accent: var(--acme-paper);
+  --hairline: rgba(20, 33, 61, .24);
+}
+[data-theme="dawn"] {
+  --bg: var(--acme-dusk); --surface: #3B2272; --text: var(--acme-paper);
+  --muted: #D6CBEF; --accent: var(--acme-sun); --on-accent: var(--acme-ink);
+  --hairline: rgba(255, 255, 255, .24);
+  --bloom-amount: 100;
+}

@@ -1,0 +1,126 @@
+{
+  "questions": [
+    {
+      "id": "outcome",
+      "group": "Message",
+      "protected": true,
+      "ask": "What should the audience think, feel or do differently after this deck?",
+      "options": [
+        "Approve a decision or budget",
+        "Change how they understand a situation",
+        "Feel ready and motivated to act",
+        "Leave with a concrete next step"
+      ]
+    },
+    {
+      "id": "audience",
+      "group": "Message",
+      "protected": true,
+      "ask": "Who is the audience, what do they already know, and what do they care about?",
+      "options": [
+        "Decision makers: short on time, focused on cost and risk",
+        "A technical team: wants depth and evidence",
+        "A mixed room: needs both the overview and the detail",
+        "External people: no internal jargon"
+      ]
+    },
+    {
+      "id": "takeaway",
+      "group": "Message",
+      "protected": true,
+      "ask": "If they remember one thing, what is it? Complete the sentence: after this deck, my audience will know, believe or do ...",
+      "options": []
+    },
+    {
+      "id": "arc",
+      "group": "Message",
+      "protected": false,
+      "ask": "How should the argument be structured?",
+      "options": [
+        "Situation, complication, resolution",
+        "Problem, insight, solution",
+        "Past, present, future",
+        "A ranked or themed list of points"
+      ]
+    },
+    {
+      "id": "evidence",
+      "group": "Message",
+      "protected": false,
+      "ask": "What data, examples or demos can support the message?",
+      "options": [
+        "Numbers: metrics, benchmarks, survey results",
+        "Qualitative: quotes, cases, observations",
+        "A live demo or screenshots",
+        "Reports or documents to draw from",
+        "Nothing yet: the deck marks where evidence will go"
+      ]
+    },
+    {
+      "id": "language",
+      "group": "Framing",
+      "protected": false,
+      "ask": "Which language is the deck in? It also sets the date format.",
+      "options": ["en", "da"]
+    },
+    {
+      "id": "length",
+      "group": "Framing",
+      "protected": false,
+      "ask": "How long is it: a number of slides, or a time budget?",
+      "options": ["5 minutes: about 5 slides", "10 minutes: 8 to 12 slides", "30 minutes: 20 to 25 slides"]
+    },
+    {
+      "id": "density",
+      "group": "Framing",
+      "protected": false,
+      "ask": "Is it speaker-led, with few words and large visuals, or a reading deck that must stand on its own?",
+      "options": ["Speaker-led", "Reading deck"]
+    },
+    {
+      "id": "setting",
+      "group": "Framing",
+      "protected": false,
+      "ask": "Where is it shown?",
+      "options": ["A live talk", "A meeting or boardroom", "Sent to read later"]
+    },
+    {
+      "id": "theme",
+      "group": "Look",
+      "protected": false,
+      "ask": "Which of the brand's themes should lead? Backgrounds can be mixed slide by slide.",
+      "options": []
+    },
+    {
+      "id": "classification",
+      "group": "Look",
+      "protected": false,
+      "ask": "Which classification label goes on the slides?",
+      "options": []
+    },
+    {
+      "id": "header",
+      "group": "Look",
+      "protected": false,
+      "ask": "Should every slide carry a short header? Leave it empty for none.",
+      "options": []
+    }
+  ],
+  "steps": [
+    {
+      "id": "outline",
+      "title": "Slide outline",
+      "what": "Write a slide-by-slide outline. Each line names the slide's role in the argument."
+    },
+    {
+      "id": "key-terms",
+      "title": "Key terms",
+      "what": "Add a short glossary of the terms that recur: one name per concept, a one-line definition and the names to avoid."
+    },
+    {
+      "id": "approval",
+      "title": "Approval",
+      "what": "Ask the user to approve the outline and the key terms. Build nothing until they do."
+    }
+  ]
+}
