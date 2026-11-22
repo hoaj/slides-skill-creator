@@ -1,0 +1,194 @@
+<!-- The Sample deck's base layouts, one <section> per Engine layout id, with neutral text.
+     {{hero}} and {{light}} are filled from the Brand pack's themes by engine/lib/sample.py. -->
+
+<section class="slide active" data-layout="cover" data-theme="{{hero}}" data-kind="cover" data-title="Cover">
+  <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;gap:var(--space-sm)">
+    <h1 class="reveal" style="font:700 var(--fs-hero)/0.98 var(--font-display);max-width:100%;text-wrap:balance;overflow-wrap:break-word">Sample deck</h1>
+    <p class="reveal" style="font-size:var(--fs-h3);color:var(--muted)">Every theme, layout and widget of this Brand pack</p>
+  </div>
+</section>
+
+<section class="slide" data-layout="title" data-theme="{{hero}}" data-kind="cover" data-title="Title slide">
+  <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:var(--space-sm)">
+    <span class="reveal" style="font:700 var(--fs-h3)/1 var(--font-display);color:var(--accent)">Quarterly review</span>
+    <h1 class="reveal" style="font:700 var(--fs-hero)/0.98 var(--font-display);color:var(--text);max-width:100%;text-wrap:balance;overflow-wrap:break-word">One clear view of the work</h1>
+    <p class="reveal" style="font-size:var(--fs-h3);color:var(--muted);max-width:1100px;line-height:1.35;margin-top:var(--space-xs)">A one-line subtitle that frames the deck.</p>
+  </div>
+</section>
+
+<section class="slide" data-layout="header" data-theme="{{light}}" data-title="Header and subtitle">
+  <div class="slide-content center" style="gap:var(--space-sm)">
+    <h2 class="reveal" style="font:700 var(--fs-h1)/1.05 var(--font-display);color:var(--text)">Reuse becomes visible</h2>
+    <p class="reveal" style="font-size:var(--fs-h3);color:var(--muted);max-width:1100px;line-height:1.35">The same overview, filtered by team.</p>
+    <p class="reveal" style="font-size:var(--fs-body);color:var(--text);max-width:1100px;line-height:1.5;margin-top:var(--space-xs)">Body copy goes here. It stays on the text colour so it reads on every background.</p>
+  </div>
+</section>
+
+<section class="slide" data-layout="section" data-theme="{{hero}}" data-kind="section" data-title="Section divider">
+  <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;gap:var(--space-sm)">
+    <span class="reveal" style="font:700 var(--fs-hero)/0.9 var(--font-display);color:var(--accent)">01</span>
+    <h2 class="reveal" style="font:700 var(--fs-title)/1.05 var(--font-display);color:var(--text);max-width:1200px">Chapter title</h2>
+    <p class="reveal" style="font-size:var(--fs-h3);color:var(--muted);max-width:980px">A brief description of what this section covers.</p>
+  </div>
+</section>
+
+<section class="slide" data-layout="agenda" data-theme="{{light}}" data-title="Agenda">
+  <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;gap:var(--gap)">
+    <h2 class="reveal" style="font:700 var(--fs-title)/1 var(--font-display);color:var(--text)">Agenda</h2>
+    <ol style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:var(--space-md)">
+      <li class="reveal" style="font-size:var(--fs-body);color:var(--text);display:flex;align-items:center;gap:var(--space-md)"><span style="font:700 var(--fs-h2)/1 var(--font-display);color:var(--accent);min-width:84px">01</span>Where we stand</li>
+      <li class="reveal" style="font-size:var(--fs-body);color:var(--text);display:flex;align-items:center;gap:var(--space-md)"><span style="font:700 var(--fs-h2)/1 var(--font-display);color:var(--accent);min-width:84px">02</span>What we learned</li>
+      <li class="reveal" style="font-size:var(--fs-body);color:var(--text);display:flex;align-items:center;gap:var(--space-md)"><span style="font:700 var(--fs-h2)/1 var(--font-display);color:var(--accent);min-width:84px">03</span>What comes next</li>
+    </ol>
+  </div>
+</section>
+
+<section class="slide" data-layout="statement" data-theme="{{hero}}" data-title="Big statement">
+  <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;gap:var(--gap)">
+    <h2 class="reveal" style="font:700 var(--fs-hero)/0.98 var(--font-display);color:var(--text);max-width:1600px;text-wrap:balance">The one thing to remember from this deck.</h2>
+  </div>
+</section>
+
+<section class="slide" data-layout="content" data-theme="{{light}}" data-title="Title and content">
+  <div class="slide-content center">
+    <h2 class="reveal" style="font:700 var(--fs-title)/1 var(--font-display);color:var(--text)">Why the change works</h2>
+    <ul style="display:flex;flex-direction:column;gap:var(--space-md);font-size:var(--fs-h3);list-style:none;padding:0;color:var(--text)">
+      <li data-step>It removes a manual step</li>
+      <li data-step>It shortens the wait</li>
+      <li data-step>It makes the result easier to check</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide" data-layout="two-content" data-theme="{{light}}" data-title="Two content">
+  <div class="slide-content" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xl);align-content:center">
+    <div><h3 class="reveal" style="font:700 var(--fs-h2)/1 var(--font-display);color:var(--accent)">Today</h3>
+      <p class="reveal" style="font-size:var(--fs-body);margin-top:var(--space-sm);line-height:1.45">Work moves through several hand-offs, and each one adds waiting time.</p></div>
+    <div><h3 class="reveal" style="font:700 var(--fs-h2)/1 var(--font-display);color:var(--accent)">Tomorrow</h3>
+      <p class="reveal" style="font-size:var(--fs-body);margin-top:var(--space-sm);line-height:1.45">One team owns the flow from start to finish, and the waiting time drops.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-layout="text-image" data-theme="{{light}}" data-title="Text and image">
+  <div class="slide-content" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xl);align-items:center;height:100%">
+    <div style="display:flex;flex-direction:column;gap:var(--gap)">
+      <h2 class="reveal" style="font:700 var(--fs-h1)/1.05 var(--font-display);color:var(--text)">A picture supports the point</h2>
+      <p class="reveal" style="font-size:var(--fs-body);color:var(--text);max-width:720px;line-height:1.5">Supporting copy that adds context to the image. Keep it to a few lines so it stays legible when presented.</p>
+    </div>
+    <div class="reveal" style="height:640px;border-radius:var(--radius);overflow:hidden">
+      <img alt="A neutral landscape placeholder" style="object-fit:cover;width:100%;height:100%;display:block" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 640'%3E%3Crect width='800' height='640' fill='%23C8CCD2'/%3E%3Ccircle cx='610' cy='150' r='70' fill='%23EDEFF2'/%3E%3Cpath d='M0 460 L210 250 L380 420 L520 300 L800 520 V640 H0Z' fill='%23868C96'/%3E%3Cpath d='M0 560 L260 400 L520 540 L800 430 V640 H0Z' fill='%235A6069'/%3E%3C/svg%3E">
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-layout="chart" data-theme="{{light}}" data-title="Metrics chart">
+  <div class="slide-content center">
+    <h2 class="reveal" style="font:700 var(--fs-h1)/1 var(--font-display);color:var(--text)">Results by year</h2>
+    <div class="chart-bars reveal" style="height:560px">
+      <div class="bar" data-value="42" data-max="100" style="--bar-color:var(--series-1)"><span class="value">42%</span><div class="fill"></div><span class="label">Year one</span></div>
+      <div class="bar" data-value="68" data-max="100" style="--bar-color:var(--series-2)"><span class="value">68%</span><div class="fill"></div><span class="label">Year two</span></div>
+      <div class="bar" data-value="91" data-max="100" style="--bar-color:var(--series-3)"><span class="value">91%</span><div class="fill"></div><span class="label">Year three</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-layout="kpi" data-theme="{{light}}" data-title="Big stat">
+  <div class="slide-content center" style="gap:var(--space-md)">
+    <div class="reveal" data-keep-color>
+      <div style="font:700 var(--fs-hero)/0.9 var(--font-display);color:var(--accent);letter-spacing:-0.03em">~30<span style="font-size:0.4em;font-weight:700;letter-spacing:normal;margin-left:0.12em">min</span></div>
+      <p style="font-size:var(--fs-h3);color:var(--text);max-width:900px;margin-top:var(--space-sm)">A short caption that explains the number.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-layout="comparison" data-theme="{{light}}" data-title="Comparison">
+  <div class="slide-content center">
+    <h2 class="reveal" style="font:700 var(--fs-title)/1 var(--font-display);color:var(--text)">Before and after</h2>
+    <div>
+      <div class="toggle-group reveal" role="tablist">
+        <button role="tab" aria-selected="true" aria-controls="sample-before">Before</button>
+        <button role="tab" aria-selected="false" aria-controls="sample-after">After</button>
+      </div>
+    </div>
+    <div style="font-size:var(--fs-h3);color:var(--text)">
+      <div class="toggle-panel active" id="sample-before">The old way took twelve manual steps.</div>
+      <div class="toggle-panel" id="sample-after">The new way takes three, and two are automatic.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-layout="process" data-theme="{{light}}" data-title="Process">
+  <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;gap:var(--space-xl)">
+    <h2 class="reveal" style="font:700 var(--fs-title)/1 var(--font-display);color:var(--text)">How it works</h2>
+    <div class="card-row" style="--cols:3;--card-parts:3">
+      <div class="card" data-step><span style="font:700 var(--fs-h2)/1 var(--font-display);color:var(--accent)">01</span><h3 style="font:700 var(--fs-h3)/1.1 var(--font-display);color:var(--text)">Discover</h3><p style="font-size:var(--fs-body);color:var(--text);line-height:1.45">Understand the need and map the current state.</p></div>
+      <div class="card" data-step><span style="font:700 var(--fs-h2)/1 var(--font-display);color:var(--accent)">02</span><h3 style="font:700 var(--fs-h3)/1.1 var(--font-display);color:var(--text)">Design</h3><p style="font-size:var(--fs-body);color:var(--text);line-height:1.45">Prototype a solution and test it with real users.</p></div>
+      <div class="card" data-step><span style="font:700 var(--fs-h2)/1 var(--font-display);color:var(--accent)">03</span><h3 style="font:700 var(--fs-h3)/1.1 var(--font-display);color:var(--text)">Deliver</h3><p style="font-size:var(--fs-body);color:var(--text);line-height:1.45">Ship it, measure the result and improve it.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-layout="cards" data-theme="{{light}}" data-title="Card row">
+  <div class="slide-content center">
+    <h2 class="reveal" style="font:700 var(--fs-title)/1 var(--font-display);color:var(--text)">Where people get help</h2>
+    <div class="card-row reveal" style="--cols:3;--card-parts:3">
+      <div class="card"><h3 style="font:700 var(--fs-h3)/1.1 var(--font-display);color:var(--text)">Self-service</h3><span style="font-size:var(--fs-caption);color:var(--muted)">Most people</span><ul style="display:flex;flex-direction:column;gap:var(--space-xs);list-style:none;padding:0;font-size:var(--fs-body);color:var(--text)"><li>Find the answer</li><li>Change the plan</li></ul></div>
+      <div class="card"><h3 style="font:700 var(--fs-h3)/1.1 var(--font-display);color:var(--text)">Chat with a person</h3><span style="font-size:var(--fs-caption);color:var(--muted)">When it is not enough</span><ul style="display:flex;flex-direction:column;gap:var(--space-xs);list-style:none;padding:0;font-size:var(--fs-body);color:var(--text)"><li>Answers quickly</li><li>Keeps the context</li></ul></div>
+      <div class="card"><h3 style="font:700 var(--fs-h3)/1.1 var(--font-display);color:var(--text)">Phone</h3><span style="font-size:var(--fs-caption);color:var(--muted)">Complex cases</span><ul style="display:flex;flex-direction:column;gap:var(--space-xs);list-style:none;padding:0;font-size:var(--fs-body);color:var(--text)"><li>A specialist on the line</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-layout="quote" data-theme="{{hero}}" data-title="Quote">
+  <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;gap:var(--gap)">
+    <span class="reveal" style="font:700 var(--fs-hero)/0.8 var(--font-display);color:var(--accent)">"</span>
+    <blockquote class="reveal" style="font:700 var(--fs-title)/1.1 var(--font-display);color:var(--text);margin:0;max-width:1500px">A small change in how we work made the biggest difference.</blockquote>
+    <p class="reveal" style="font-size:var(--fs-h3);color:var(--muted)">A neutral attribution</p>
+  </div>
+</section>
+
+<section class="slide" data-layout="roadmap-columns" data-theme="{{light}}" data-title="Roadmap columns">
+  <div class="slide-content rm-stack">
+    <div class="rm-head reveal"><span class="kicker">Plan for the year</span><h1>Quarterly roadmap</h1></div>
+    <div class="rm-cols reveal" style="--rm-n:3">
+      <div class="q-col"><div class="q-col__head"><div class="q-col__title">Q2</div><span class="pill">In progress</span></div><div class="q-col__list"><div class="init"><div class="init__title">Initiative one</div><div class="init__desc">One line on what it delivers.</div></div><div class="init"><div class="init__title">Initiative two</div><div class="init__desc">One line on what it delivers.</div></div></div></div>
+      <div class="q-col"><div class="q-col__head"><div class="q-col__title">Q3</div><span class="pill pill--muted">Planned</span></div><div class="q-col__list"><div class="init init--muted"><div class="init__title">Planned initiative</div><div class="init__desc">Short description.</div></div><div class="open-slot"><span class="open-slot__plus">+</span><span class="open-slot__t">Room for intake</span></div></div></div>
+      <div class="q-col"><div class="q-col__head"><div class="q-col__title">Q4</div><span class="pill pill--muted">Not committed</span></div><div class="q-col__list"><div class="init init--muted"><div class="init__title">Candidate initiative</div><div class="init__desc">Short description.</div></div></div></div>
+    </div>
+    <div class="cross-box reveal" style="--rm-n:3"><div class="cross-box__head"><div class="cross-box__title">Cross-cutting</div><span class="pill pill--s1">Ongoing</span></div><div class="cross-rows"><div class="cross-row"><div class="init init--s1" style="grid-column:2 / span 2"><div class="init__title">Always-on workstream</div><div class="init__desc">Spans the second half.</div></div></div></div></div>
+  </div>
+</section>
+
+<section class="slide" data-layout="roadmap-dependency" data-theme="{{light}}" data-title="Roadmap dependencies">
+  <div class="slide-content rm-stack">
+    <div class="rm-head reveal"><span class="kicker">Plan for the year</span><h1>Dependency map</h1></div>
+    <div class="rm-grid reveal" style="--rm-n:3">
+      <div class="dep-block"><div class="dep-block__head"><div class="dep-block__head-row"><div class="dep-block__title">No dependencies</div><span class="pill">Owned</span></div><div class="dep-block__sub">Delivered without outside input.</div></div><div class="dep-cards"><div class="dep-card"><div class="dep-card__title">First item</div><div class="dep-card__desc">What it is.</div></div></div></div>
+      <div class="dep-block"><div class="dep-block__head"><div class="dep-block__head-row"><div class="dep-block__title">Shared</div><span class="pill pill--s3">Needs a team</span></div><div class="dep-block__sub">Needs time from another team.</div></div><div class="dep-cards"><div class="dep-card dep-card--s3"><div class="dep-card__title">Item with phases</div><div class="dep-card__desc">Landed in two steps.</div><div class="ribbon"><div class="ribbon__seg"><div class="ribbon__weeks">Weeks 1-3 · Light</div><div class="ribbon__label">One day of input</div></div><div class="ribbon__seg ribbon__seg--heavy"><div class="ribbon__weeks">Weeks 4-9 · Heavy</div><div class="ribbon__label">One week of work</div></div></div></div></div></div>
+      <div class="dep-block"><div class="dep-block__head"><div class="dep-block__head-row"><div class="dep-block__title">External</div><span class="pill pill--s4">External</span></div><div class="dep-block__sub">Needs an outside prerequisite.</div></div><div class="dep-cards"><div class="dep-card dep-card--s4"><div class="dep-card__title">Third item</div><div class="dep-card__desc">Work across organisations.</div><div class="dep-card__note">Needs a separate budget</div></div></div></div>
+    </div>
+    <div class="legend reveal"><div class="legend__item"><span class="legend__sw legend__sw--muted"></span>No dependencies</div><div class="legend__item"><span class="legend__sw legend__sw--s3"></span>Shared</div><div class="legend__item"><span class="legend__sw legend__sw--s4"></span>External</div></div>
+  </div>
+</section>
+
+<section class="slide" data-layout="roadmap-gantt" data-theme="{{light}}" data-title="Roadmap timeline">
+  <div class="slide-content rm-stack">
+    <div class="rm-head reveal"><span class="kicker">Plan for the year</span><h1>Delivery timeline</h1></div>
+    <div class="gantt reveal" style="--rm-cols:12; --rm-gutter:200px">
+      <div class="gantt__axis"><div></div><div><div class="gantt__periods"><div style="grid-column:1 / span 3">Q1</div><div style="grid-column:4 / span 3">Q2</div><div style="grid-column:7 / span 3">Q3</div><div style="grid-column:10 / span 3">Q4</div></div><div class="gantt__ticks"><div class="gantt__tick" style="grid-column:1">Jan</div><div class="gantt__tick" style="grid-column:4">Apr</div><div class="gantt__tick" style="grid-column:7">Jul</div><div class="gantt__tick" style="grid-column:10">Oct</div></div></div></div>
+      <div class="gantt__rows">
+        <div class="gantt__row"><div class="gantt__label"><span class="gantt__label-t">Workstream one</span><span class="gantt__label-s">Owner · note</span></div><div class="gantt__track"><div class="bar" style="grid-column:1 / span 5">Research and build</div></div></div>
+        <div class="gantt__row"><div class="gantt__label"><span class="gantt__label-t">Workstream two</span><span class="gantt__label-s">Owner · note</span></div><div class="gantt__track"><div class="bar bar--s2" style="grid-column:4 / span 4">Integration</div><div class="bar bar--milestone" style="grid-column:8 / span 1">Live</div></div></div>
+        <div class="gantt__row"><div class="gantt__label"><span class="gantt__label-t">Workstream three</span><span class="gantt__label-s">Owner · note</span></div><div class="gantt__track"><div class="bar bar--s3" style="grid-column:7 / span 6">Rollout<span class="bar__sub">team by team</span></div></div></div>
+      </div>
+      <div class="legend" style="margin-top:auto"><div class="legend__item"><span class="legend__sw legend__sw--s1"></span>Internal</div><div class="legend__item"><span class="legend__sw legend__sw--s2"></span>Integration</div><div class="legend__item"><span class="legend__sw legend__sw--s3"></span>Rollout</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-layout="closing" data-theme="{{hero}}" data-kind="closing" data-title="Closing">
+  <div class="slide-content" style="display:flex;flex-direction:column;justify-content:center;gap:var(--gap)">
+    <h2 class="reveal" style="font:700 var(--fs-hero)/0.98 var(--font-display);color:var(--text)">Thank you.</h2>
+    <p class="reveal" style="font-size:var(--fs-h3);color:var(--muted)">you@example.com · example.com</p>
+  </div>
+</section>

@@ -1,0 +1,24 @@
+/* The Sample deck's own helpers. Colours are semantic tokens, so they follow every theme. */
+.sample-kicker { font:700 var(--fs-h3)/1 var(--font-display); color:var(--accent); }
+.sample-title { font:700 var(--fs-title)/1.02 var(--font-display); color:var(--text); }
+.sample-body { font-size:var(--fs-h3); line-height:1.35; color:var(--text); max-width:1400px; }
+.sample-muted { font-size:var(--fs-h3); line-height:1.35; color:var(--muted); max-width:1400px; }
+.sample-swatches { display:flex; gap:var(--space-md); flex-wrap:wrap; }
+.sample-swatch { display:flex; align-items:center; justify-content:center; width:230px; height:120px;
+  border-radius:var(--radius); border:2px solid var(--hairline);
+  font:700 var(--fs-caption)/1 var(--font-display); }
+.sample-swatch--surface { background:var(--surface); color:var(--text); }
+.sample-swatch--accent { background:var(--accent); color:var(--on-accent); }
+.sample-swatch--text { background:var(--text); color:var(--bg); }
+.sample-pills { display:flex; gap:var(--space-sm); flex-wrap:wrap; }
+.sample-pill { padding:14px 28px; border-radius:999px; background:var(--surface); color:var(--text);
+  font:700 var(--fs-body)/1 var(--font-display); }
+.sample-pill--default { background:var(--accent); color:var(--on-accent); }
+.sample-widgets { display:grid; grid-template-columns:1.25fr 1fr; gap:var(--space-xl); align-items:center; }
+.sample-stack { display:flex; flex-direction:column; align-items:flex-start; gap:var(--space-md); }
+.sample-caption { font-size:var(--fs-caption); color:var(--muted); }
+.sample-steps { display:flex; flex-direction:column; gap:var(--space-sm); font-size:var(--fs-body);
+  color:var(--text); list-style:none; padding:0; }
+.sample-icons { display:grid; grid-template-columns:repeat(8, 1fr); gap:var(--space-lg); justify-items:center; }
+.sample-icons .deck-icon { width:96px; height:96px; fill:currentColor; color:var(--accent); }
+.sample-embed { height:300px; width:100%; }

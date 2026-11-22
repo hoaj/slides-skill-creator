@@ -9,9 +9,11 @@
     python3 <skill>/engine/deck.py export-pptx deck.html deck.pptx
     python3 <skill>/engine/deck.py extract-pptx in.pptx [out_dir]
     python3 <skill>/engine/deck.py check [--brand <slug>]
+    python3 <skill>/engine/deck.py sample --brand <slug> [out.html] [--open]
+    python3 <skill>/engine/deck.py compare <old-engine> <new-engine> --brand <slug> [--out <dir>] [--json]
     python3 <skill>/engine/deck.py doctor [--report]
 
-Everything but the PowerPoint commands needs only Python 3.8+. Those import
+Everything but the PowerPoint commands and `compare` needs only Python 3.8+. Those import
 their optional dependencies when they run, and say how to install what is missing.
 Generated output never goes into the skill folder.
 """
@@ -91,6 +93,24 @@ def cmd_inspect(args):
     return inspect_deck.run(pathlib.Path(args.deck), args.json)
 
 
+def cmd_sample(args):
+    from lib import sample
+    sample.run(args.brand, args.out, args.open, args.template_only)
+    return 0
+
+
+def cmd_compare(args):
+    """Exit 0 for no difference, 1 for a difference, 2 when the comparison could not run."""
+    try:
+        from lib import compare
+        return compare.run(args)
+    except DeckError as e:
+        print(f"error: {e}", file=sys.stderr)
+    except Exception as e:  # a crash in a tool must not look like "a difference"
+        print(f"error: the comparison could not run: {type(e).__name__}: {e}", file=sys.stderr)
+    return 2
+
+
 def cmd_export_pptx(args):
     from lib import pptx_export
     pptx_export.run(args)
@@ -144,6 +164,22 @@ def parser():
     p.add_argument("deck")
     p.add_argument("--json", action="store_true", help="print JSON")
     p.set_defaults(func=cmd_inspect)
+
+    p = sub.add_parser("sample", help="build the neutral Sample deck for a Brand pack")
+    p.add_argument("--brand", required=True, help="Brand pack slug")
+    p.add_argument("out", nargs="?", help="output file (default: <slug>-sample.html here)")
+    p.add_argument("--open", action="store_true", help="show the deck in the browser")
+    p.add_argument("--template-only", action="store_true",
+                   help="write the Sample deck's template and do not build it")
+    p.set_defaults(func=cmd_sample)
+
+    p = sub.add_parser("compare", help="compare a Brand pack's Sample deck on two Engines")
+    p.add_argument("old_engine", help="the old Engine folder, or a Slides skill that holds one")
+    p.add_argument("new_engine", help="the new Engine folder, or a Slides skill that holds one")
+    p.add_argument("--brand", required=True, help="Brand pack slug")
+    p.add_argument("--out", help="folder for the report and images (default: none are kept)")
+    p.add_argument("--json", action="store_true", help="print the summary as JSON")
+    p.set_defaults(func=cmd_compare)
 
     p = sub.add_parser("export-pptx", help="export a built deck to PowerPoint with live text")
     p.add_argument("deck")
