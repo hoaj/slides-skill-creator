@@ -1,0 +1,9 @@
+/* The Dawn theme's backdrop: two soft glows over its solid base colour, which is what the
+   contrast checks measure. The Bloom slider sets --bloom-amount on the slide (0 to 200). */
+.slide[data-theme="dawn"]::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  opacity: calc(var(--bloom-amount, 100) / 100);
+  background:
+    radial-gradient(52% 62% at 88% 12%, rgba(255, 122, 89, .55), transparent 72%),
+    radial-gradient(58% 70% at 8% 96%, rgba(36, 71, 216, .70), transparent 72%);
+}

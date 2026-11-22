@@ -1,0 +1,5 @@
+/* Public Sans 2.001, unmodified files from the official release. See licenses/. */
+@font-face { font-family: "Public Sans"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("fonts/PublicSans-Regular.woff2") format("woff2"); }
+@font-face { font-family: "Public Sans"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("fonts/PublicSans-Bold.woff2") format("woff2"); }

@@ -1,0 +1,154 @@
+{
+  "formatVersion": 1,
+  "slug": "acme",
+  "name": "Acme",
+  "aliases": [
+    "acme corp",
+    "acme inc"
+  ],
+  "logo": "assets/logo.svg",
+  "defaultTheme": "paper",
+  "themes": [
+    {
+      "value": "paper",
+      "label": "Paper",
+      "hero": false,
+      "bloom": false
+    },
+    {
+      "value": "mist",
+      "label": "Mist",
+      "hero": false,
+      "bloom": false
+    },
+    {
+      "value": "ink",
+      "label": "Ink",
+      "hero": true,
+      "bloom": false
+    },
+    {
+      "value": "cobalt",
+      "label": "Cobalt",
+      "hero": true,
+      "bloom": false
+    },
+    {
+      "value": "sun",
+      "label": "Sun",
+      "hero": true,
+      "bloom": false
+    },
+    {
+      "value": "dawn",
+      "label": "Dawn",
+      "hero": true,
+      "bloom": true
+    }
+  ],
+  "classifications": [
+    "INTERNAL",
+    "PUBLIC",
+    "none"
+  ],
+  "defaultClassification": "INTERNAL",
+  "fonts": [
+    {
+      "file": "fonts/PublicSans-Regular.woff2",
+      "family": "Public Sans",
+      "weight": 400,
+      "style": "normal"
+    },
+    {
+      "file": "fonts/PublicSans-Bold.woff2",
+      "family": "Public Sans",
+      "weight": 700,
+      "style": "normal"
+    }
+  ],
+  "numberFormat": {
+    "thousands": ",",
+    "decimal": "."
+  },
+  "guard": {
+    "palette": {
+      "paper": [
+        255,
+        255,
+        255
+      ],
+      "mist": [
+        238,
+        241,
+        247
+      ],
+      "ink": [
+        20,
+        33,
+        61
+      ],
+      "cobalt": [
+        36,
+        71,
+        216
+      ],
+      "sun": [
+        255,
+        194,
+        51
+      ],
+      "dusk": [
+        42,
+        20,
+        88
+      ],
+      "coral": [
+        255,
+        122,
+        89
+      ],
+      "teal": [
+        15,
+        118,
+        110
+      ]
+    },
+    "neutrals": [
+      "paper",
+      "mist",
+      "ink",
+      "dusk"
+    ],
+    "vivids": [
+      "cobalt",
+      "sun",
+      "coral",
+      "teal"
+    ],
+    "lightNeutral": "paper",
+    "darkNeutral": "ink",
+    "themeBg": {
+      "paper": "paper",
+      "mist": "mist",
+      "ink": "ink",
+      "cobalt": "cobalt",
+      "sun": "sun",
+      "dawn": "dusk"
+    },
+    "themeText": {
+      "paper": "ink",
+      "mist": "ink",
+      "ink": "paper",
+      "cobalt": "paper",
+      "sun": "ink",
+      "dawn": "paper"
+    }
+  },
+  "contrastExceptions": [
+    {
+      "theme": "cobalt",
+      "pair": "muted",
+      "reason": "Muted text on Cobalt is used only for subtitles at 34px or larger, where WCAG AA asks for 3:1."
+    }
+  ]
+}

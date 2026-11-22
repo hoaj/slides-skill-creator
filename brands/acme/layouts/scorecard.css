@@ -1,0 +1,9 @@
+.layout-scorecard__title { font: 700 var(--fs-title)/1.02 var(--font-display); color: var(--text); }
+.layout-scorecard__row { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
+.layout-scorecard__item { display: flex; flex-direction: column; gap: var(--space-sm);
+  padding: var(--pad-card); background: var(--surface); border-radius: var(--radius); }
+.layout-scorecard__value { font: 700 var(--fs-hero)/1 var(--font-display); color: var(--accent); }
+.layout-scorecard__name { font: 700 var(--fs-h3)/1.1 var(--font-display); color: var(--text); }
+.layout-scorecard__track { display: block; height: 16px; border-radius: 999px; background: var(--hairline); overflow: hidden; }
+.layout-scorecard__fill { display: block; height: 100%; border-radius: 999px; background: var(--accent); }
+.layout-scorecard__note { font-size: var(--fs-caption); color: var(--muted); }
