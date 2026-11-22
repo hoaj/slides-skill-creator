@@ -1,0 +1,13 @@
+{
+  "name": "__SKILL__",
+  "description": __DESCRIPTION_JSON__,
+  "version": "__VERSION__",
+  "author": {
+    "name": __AUTHOR_JSON__
+  },
+  "repository": "https://github.com/__REPO__",
+  "skills": [
+    "./skills/__SKILL__",
+    "./skills/__SKILL__-feedback"
+  ]
+}

@@ -1,0 +1,75 @@
+# __SKILL__'s CI: one version across the manifests, a higher version when shipped files change,
+# valid Brand packs and a Sample deck for each of them.
+name: __SKILL__-ci
+
+on:
+  pull_request:
+    #@shared paths:
+    #@shared   - __PLUGIN_DIR__/**
+    #@shared   - .github/workflows/__SKILL__-ci.yml
+  push:
+    branches: [main]
+    #@shared paths:
+    #@shared   - __PLUGIN_DIR__/**
+    #@shared   - .github/workflows/__SKILL__-ci.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: __PLUGIN_DIR__
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: One version across the manifests
+        run: |
+          version="$(jq -r .version .claude-plugin/plugin.json)"
+          for manifest in .cursor-plugin/plugin.json .github/plugin/plugin.json; do
+            other="$(jq -r .version "$manifest")"
+            if [ "$other" != "$version" ]; then
+              echo "::error file=$manifest::version $other differs from $version"
+              exit 1
+            fi
+          done
+      - name: Version above the base branch
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          shipped=(skills .claude-plugin .cursor-plugin .github/plugin)
+          if git diff --quiet "origin/$BASE_REF...HEAD" -- "${shipped[@]}"; then
+            echo "No shipped file changed."
+            exit 0
+          fi
+          version="$(jq -r .version .claude-plugin/plugin.json)"
+          base="$(git show "origin/$BASE_REF:./.claude-plugin/plugin.json" 2>/dev/null | jq -r .version || true)"
+          if [ -z "$base" ]; then
+            echo "The base branch has no version yet."
+            exit 0
+          fi
+          highest="$(printf '%s\n%s\n' "$base" "$version" | sort -V | tail -n 1)"
+          if [ "$version" = "$base" ] || [ "$highest" != "$version" ]; then
+            echo "::error::shipped files changed, so the version must rise above $base (now $version)"
+            exit 1
+          fi
+      - name: Check the Brand packs
+        run: python3 skills/__SKILL__/engine/deck.py check
+      - name: Build each Sample deck
+        run: |
+          for pack in skills/__SKILL__/brands/*/; do
+            slug="$(basename "$pack")"
+            python3 skills/__SKILL__/engine/deck.py sample --brand "$slug" "$RUNNER_TEMP/$slug-sample.html"
+          done

@@ -1,0 +1,16 @@
+{
+  "name": "__SKILL__",
+  "owner": {
+    "name": __AUTHOR_JSON__
+  },
+  "metadata": {
+    "description": __DESCRIPTION_JSON__
+  },
+  "plugins": [
+    {
+      "name": "__SKILL__",
+      "source": "./",
+      "description": __DESCRIPTION_JSON__
+    }
+  ]
+}
