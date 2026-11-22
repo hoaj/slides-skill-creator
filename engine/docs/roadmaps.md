@@ -133,6 +133,8 @@ theme** of the active pack; set it on the `<section>`.
 
 ## Layout A — Quarter columns
 
+**Layout id**: `roadmap-columns`
+
 `--rm-n` sets the number of columns (default 3). Status: use `pill--accent`-style (the plain `.pill` = accent/now), `.pill--muted` = planned, or `.pill--sN` for a category. Initiative emphasis via `.init--muted` / `.init--sN` (left border).
 
 ```html
@@ -178,6 +180,8 @@ theme** of the active pack; set it on the `<section>`.
 ---
 
 ## Layout B — Dependency map
+
+**Layout id**: `roadmap-dependency`
 
 Group work by dependency type. Tint the block + cards with a category (`--sN`); use `.ribbon` for effort/phase, `.dep-card__note` for blockers. Close with a `.legend`.
 
@@ -239,6 +243,8 @@ Group work by dependency type. Tint the block + cards with a category (`--sN`); 
 ---
 
 ## Layout C — Gantt timeline
+
+**Layout id**: `roadmap-gantt`
 
 A CSS-grid Gantt. Set `--rm-cols` (number of time columns) and `--rm-gutter` (label width) on the `.gantt`. Then place period headers, ticks, and bars on the grid with inline `style="grid-column:<start> / span <n>"` (columns are 1-indexed). Use `.bar--sN` for category and `.bar--milestone` for a go-live/decision point. Bar labels stay legible automatically (contrast guard).
 

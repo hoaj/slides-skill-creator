@@ -9,6 +9,7 @@ import tempfile
 REPO = pathlib.Path(__file__).resolve().parent.parent
 ENGINE = REPO / "engine"
 TEMPLATE = REPO / "tests" / "fixtures" / "smoke.template.html"
+ACME = REPO / "brands" / "acme"
 
 
 class Workspace:
@@ -49,6 +50,33 @@ class Workspace:
             edit(manifest)
         (pack / "brand.json").write_text(json.dumps(manifest), encoding="utf-8")
         return pack
+
+    def add_acme(self):
+        """Copy the example Brand pack into this skill."""
+        pack = self.skill / "brands" / "acme"
+        if pack.exists():
+            shutil.rmtree(str(pack))
+        shutil.copytree(ACME, pack)
+        return pack
+
+    def edit_manifest(self, pack, edit):
+        path = pack / "brand.json"
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+        edit(manifest)
+        path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    def replace_in(self, path, old, new):
+        text = path.read_text(encoding="utf-8")
+        assert old in text, f"{old!r} is not in {path}"
+        path.write_text(text.replace(old, new), encoding="utf-8")
+
+    def write(self, path, text):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+
+    def check(self, brand=None):
+        args = ["check"] + (["--brand", brand] if brand else [])
+        return self.stdlib(*args)
 
     def build(self, brand="plain", template=TEMPLATE, out="deck.html"):
         return self.stdlib("build", "--brand", brand, str(template), str(self.project / out))

@@ -1,0 +1,23 @@
+{
+  "layouts": [
+    { "id": "cover", "name": "Cover", "doc": "docs/slide-templates.md" },
+    { "id": "title", "name": "Title slide", "doc": "docs/slide-templates.md" },
+    { "id": "header", "name": "Header + subtitle", "doc": "docs/slide-templates.md" },
+    { "id": "section", "name": "Section divider", "doc": "docs/slide-templates.md" },
+    { "id": "agenda", "name": "Agenda", "doc": "docs/slide-templates.md" },
+    { "id": "statement", "name": "Big statement", "doc": "docs/slide-templates.md" },
+    { "id": "content", "name": "Title + content", "doc": "docs/slide-templates.md" },
+    { "id": "two-content", "name": "Two content", "doc": "docs/slide-templates.md" },
+    { "id": "text-image", "name": "Text + image", "doc": "docs/slide-templates.md" },
+    { "id": "chart", "name": "Metrics chart", "doc": "docs/slide-templates.md" },
+    { "id": "kpi", "name": "Big stat", "doc": "docs/slide-templates.md" },
+    { "id": "comparison", "name": "Comparison toggle", "doc": "docs/slide-templates.md" },
+    { "id": "process", "name": "Process steps", "doc": "docs/slide-templates.md" },
+    { "id": "cards", "name": "Card row", "doc": "docs/slide-templates.md" },
+    { "id": "quote", "name": "Quote", "doc": "docs/slide-templates.md" },
+    { "id": "closing", "name": "Closing", "doc": "docs/slide-templates.md" },
+    { "id": "roadmap-columns", "name": "Roadmap: quarter columns", "doc": "docs/roadmaps.md" },
+    { "id": "roadmap-dependency", "name": "Roadmap: dependency map", "doc": "docs/roadmaps.md" },
+    { "id": "roadmap-gantt", "name": "Roadmap: Gantt timeline", "doc": "docs/roadmaps.md" }
+  ]
+}

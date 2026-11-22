@@ -14,7 +14,7 @@ python3 <skill>/engine/deck.py build --brand <slug> template.html deck.html --op
 
 `--open` reloads the browser tab that already shows the deck (it keeps its slide) and opens a new one only the first time. The `<!-- key-terms -->` comment after `<body>` holds the approved key terms; the build warns about each slide that uses a name listed under `Avoid:`.
 
-`--brand` selects the pack in `<skill>/brands/`. The build replaces each marker with the real file contents and stops with a precise error when a marker, a required pack file or a required field is missing. Optional pack files that are absent (`fonts.css`, `assets/gradients.css`, `icon-library.js`) expand to nothing.
+`--brand` selects the pack in `<skill>/brands/`. The build replaces each marker with the real file contents and stops with a precise error when a marker, a required pack file or a required field is missing. Optional pack files that are absent (`fonts.css`, `assets/gradients.css`, `icon-library.js`) expand to nothing. A relative `url("fonts/name.woff2")` in `fonts.css` is inlined as a data URI, so the deck stays one file.
 
 Order inside `<style>`:
 
@@ -23,7 +23,7 @@ Order inside `<style>`:
 3. the pack's `assets/gradients.css`, when it has one
 4. `engine/runtime/viewport-base.css`
 5. `engine/runtime/widgets.css`
-6. `engine/runtime/chrome.css`
+6. `engine/runtime/chrome.css`, followed by the CSS of the pack's own `layouts/`, when it has any
 7. per-deck slide layout styles, authored for this deck
 
 Order inside `<script>`, at the **end of `<body>`**:
@@ -112,6 +112,7 @@ The `data-theme` attribute on the stage sets the deck-wide colour theme. It must
 - **`data-classification`**: the classification badge in the frame. Valid values are the labels in the pack's `classifications`. The value `none` hides the badge. Without this attribute the deck uses the pack's `defaultClassification`, and the build stops on a label the pack does not define.
 - **`data-header`**: an optional header shown at the top of every slide; hidden when empty.
 - **`lang`**: drives the auto-formatted date in `.deck-date`. Use `en` (English) or `da` (Danish).
+- **`data-deck-type`**: the Deck type this deck follows. `deck.py build --deck-type <id>` writes it, later builds keep it, and `--deck-type none` clears it. An id the pack no longer has produces a warning.
 
 The `.deck-frame` block appears **once** per deck, immediately inside `#deckStage` before the first `<section>`. Keep the `<!--__LOGO__-->` marker inside `.deck-logo`: the build inlines the pack's logo SVG there and strips its XML prolog. A logo that uses `currentColor` inherits `--text` and themes correctly on every background.
 

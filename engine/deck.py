@@ -2,16 +2,21 @@
 """The Engine's one entry point.
 
     python3 <skill>/engine/deck.py brands
-    python3 <skill>/engine/deck.py build --brand <slug> template.html deck.html [--open]
+    python3 <skill>/engine/deck.py deck-types --brand <slug> [--json]
+    python3 <skill>/engine/deck.py interview --brand <slug> [--deck-type <id>] [--json]
+    python3 <skill>/engine/deck.py build --brand <slug> [--deck-type <id>] template.html deck.html [--open]
+    python3 <skill>/engine/deck.py inspect deck.html [--json]
     python3 <skill>/engine/deck.py export-pptx deck.html deck.pptx
     python3 <skill>/engine/deck.py extract-pptx in.pptx [out_dir]
+    python3 <skill>/engine/deck.py check [--brand <slug>]
     python3 <skill>/engine/deck.py doctor [--report]
 
-`brands`, `build` and `doctor` need only Python 3.8+. The PowerPoint commands import
+Everything but the PowerPoint commands needs only Python 3.8+. Those import
 their optional dependencies when they run, and say how to install what is missing.
 Generated output never goes into the skill folder.
 """
 import argparse
+import json
 import pathlib
 import sys
 
@@ -38,8 +43,52 @@ def cmd_brands(args):
 
 def cmd_build(args):
     from lib import build
-    build.run(args.brand, pathlib.Path(args.template), pathlib.Path(args.out), args.open)
+    build.run(args.brand, pathlib.Path(args.template), pathlib.Path(args.out), args.open,
+              args.deck_type)
     return 0
+
+
+def cmd_check(args):
+    from lib import packs
+    slugs = [args.brand] if args.brand else packs.all_slugs()
+    errors = warnings = 0
+    for slug in slugs:
+        _, report = packs.check(slug)
+        errors += len(report.errors)
+        warnings += len(report.warnings)
+        state = "not valid" if report.errors else "valid"
+        print(f"{slug}: {state}, {len(report.errors)} error(s), {len(report.warnings)} warning(s)")
+        for problem in report.errors:
+            print(f"  error: {problem}")
+        for problem in report.warnings:
+            print(f"  warning: {problem}")
+    print(f"Checked {len(slugs)} Brand pack(s): {errors} error(s), {warnings} warning(s).")
+    return 1 if errors else 0
+
+
+def cmd_deck_types(args):
+    from lib import packs, playbook
+    found = playbook.list_deck_types(packs.load(args.brand))
+    if args.json:
+        print(json.dumps(found, indent=2, ensure_ascii=False))
+    else:
+        for item in found:
+            print(f"{item['id']}: {item['name']}. Use for: {item['when']}")
+        if not found:
+            print(f"Brand pack '{args.brand}' has no Deck types.")
+    return 0
+
+
+def cmd_interview(args):
+    from lib import packs, playbook
+    result, _ = playbook.merge(packs.load(args.brand), args.deck_type)
+    print(json.dumps(result, indent=2, ensure_ascii=False) if args.json else playbook.render(result))
+    return 0
+
+
+def cmd_inspect(args):
+    from lib import inspect_deck
+    return inspect_deck.run(pathlib.Path(args.deck), args.json)
 
 
 def cmd_export_pptx(args):
@@ -73,7 +122,28 @@ def parser():
     p.add_argument("out")
     p.add_argument("--open", action="store_true",
                    help="show the deck: reload the tab that shows it, or open one")
+    p.add_argument("--deck-type", help="record this Deck type in the deck ('none' clears it)")
     p.set_defaults(func=cmd_build)
+
+    p = sub.add_parser("check", help="validate Brand packs and print every problem")
+    p.add_argument("--brand", help="check only this Brand pack")
+    p.set_defaults(func=cmd_check)
+
+    p = sub.add_parser("deck-types", help="list a Brand pack's Deck types")
+    p.add_argument("--brand", required=True, help="Brand pack slug")
+    p.add_argument("--json", action="store_true", help="print JSON")
+    p.set_defaults(func=cmd_deck_types)
+
+    p = sub.add_parser("interview", help="print the merged Interview for a brand and Deck type")
+    p.add_argument("--brand", required=True, help="Brand pack slug")
+    p.add_argument("--deck-type", help="Deck type id")
+    p.add_argument("--json", action="store_true", help="print JSON")
+    p.set_defaults(func=cmd_interview)
+
+    p = sub.add_parser("inspect", help="read a built deck's brand, Deck type and key terms")
+    p.add_argument("deck")
+    p.add_argument("--json", action="store_true", help="print JSON")
+    p.set_defaults(func=cmd_inspect)
 
     p = sub.add_parser("export-pptx", help="export a built deck to PowerPoint with live text")
     p.add_argument("deck")

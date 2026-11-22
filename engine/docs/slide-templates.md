@@ -29,8 +29,13 @@
 
 ## Templates
 
+Each layout has a stable id. Put it on the slide as `data-layout="<id>"`. A Deck type names its
+recommended layouts by these ids, and a Brand pack's own layouts add ids of their own (see
+`brand-pack.md`). A pack's layouts are in `brands/<slug>/layouts/`.
+
 ### Cover
 
+**Layout id**: `cover`
 **Narrative role**: Opening slide — brand identity, deck title, presenter, date.
 **Density note**: Very low; hero typography dominates; title and subtitle only.
 
@@ -57,6 +62,7 @@
 
 ### Title slide (kicker + headline + subtitle)
 
+**Layout id**: `title`
 **Narrative role**: Cover or title slide with a large headline and a one-line subtitle, optionally under a small kicker (eyebrow) that names what the headline doesn't: the deck, the event or the date. Drop the kicker when it would only restate the headline.
 **Density note**: Very low. Keep kicker + headline + subtitle in **one flex-column container** so all three share the same left edge.
 
@@ -76,6 +82,7 @@
 
 ### Header + subtitle (content slide)
 
+**Layout id**: `header`
 **Narrative role**: Standard content slide whose header carries a sub-heading / deck line beneath it before the body.
 **Density note**: Medium. The subtitle is a **sub-heading, not a caption** — keep it at `--fs-h3` so it stays readable when projected; it must never be smaller than the body (`--fs-body`).
 
@@ -93,6 +100,7 @@
 
 ### Section divider
 
+**Layout id**: `section`
 **Narrative role**: Marks the start of a new chapter or topic; resets audience attention.
 **Density note**: Minimal; a single large numeral plus a short chapter label.
 
@@ -112,6 +120,7 @@
 
 ### Agenda
 
+**Layout id**: `agenda`
 **Narrative role**: Presents the run-of-show so the audience knows what to expect.
 **Density note**: Low–medium; numbered list of 3–5 agenda items with optional timing.
 
@@ -142,6 +151,7 @@
 
 ### Big-statement
 
+**Layout id**: `statement`
 **Narrative role**: One memorable assertion — the core takeaway the audience should leave with.
 **Density note**: Very low; hero-scale text only, no supporting copy.
 
@@ -159,6 +169,7 @@
 
 ### Title + Content
 
+**Layout id**: `content`
 **Narrative role**: Standard content slide with a heading and a bulleted list that builds step-by-step.
 **Density note**: Medium; three bullet points revealed one per advance.
 
@@ -179,6 +190,7 @@
 
 ### Two-Content
 
+**Layout id**: `two-content`
 **Narrative role**: Side-by-side comparison or two parallel themes with equal visual weight.
 **Density note**: Medium; two columns, each with a heading and a short paragraph.
 
@@ -197,6 +209,7 @@
 
 ### Text + Image
 
+**Layout id**: `text-image`
 **Narrative role**: Combines narrative copy with a supporting visual — ideal for product shots, screenshots, or photography.
 **Density note**: Medium; copy on the left, full-height image on the right.
 
@@ -219,6 +232,7 @@
 
 ### Metrics / KPI
 
+**Layout id**: `chart`
 **Narrative role**: Showcases quantitative results with an animated bar chart.
 **Density note**: Medium; heading plus three-bar chart.
 
@@ -242,6 +256,7 @@
 
 ### Big stat / figure
 
+**Layout id**: `kpi`
 **Narrative role**: A single hero number with a unit (e.g. "~30 min", "4.2M") and a short caption — the headline figure of a slide.
 **Density note**: Very low; one giant numeral plus a caption (and optionally a supporting list beside it).
 
@@ -262,6 +277,7 @@
 
 ### Comparison / Toggle
 
+**Layout id**: `comparison`
 **Narrative role**: Interactive before/after or scenario switcher the presenter can click through.
 **Density note**: Low–medium; toggle control plus a text panel per state.
 
@@ -285,6 +301,7 @@
 
 ### Process / Build-steps
 
+**Layout id**: `process`
 **Narrative role**: Walks through a sequential process or workflow, revealing each stage on advance.
 **Density note**: Medium; three to four horizontal stages, each with a numeral, label, and short description.
 
@@ -318,6 +335,7 @@
 
 ### Card row (groups, pillars, options side by side)
 
+**Layout id**: `cards`
 **Narrative role**: Puts two to four peers side by side (groups of concepts, pillars, options) so the audience compares them part by part.
 **Density note**: Medium; each card has the same parts in the same order: title, tag, body.
 
@@ -363,6 +381,7 @@ The whole row carries one `.reveal`, so it rises as one block. To reveal the car
 
 ### Quote
 
+**Layout id**: `quote`
 **Narrative role**: Features a powerful testimonial, insight, or memorable quote from an external voice.
 **Density note**: Very low; one large quotation and a short attribution line.
 
@@ -380,6 +399,7 @@ The whole row carries one `.reveal`, so it rises as one block. To reveal the car
 
 ### Closing
 
+**Layout id**: `closing`
 **Narrative role**: Final slide — thank you, contact details, and a strong brand send-off.
 **Density note**: Low; thank-you line and contact/URL.
 
