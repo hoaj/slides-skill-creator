@@ -1,8 +1,9 @@
 """Check this machine and the Brand packs, or print a redacted environment report.
 
 `doctor` exits 0 when everything required is present. `doctor --report` prints only
-versions, OS, browser availability and dependency status for a bug report: no deck content,
-no Brand pack names and no paths from the home directory.
+versions, OS, browser availability, dependency status and which Engine files were edited
+locally, for a bug report: no deck content, no Brand pack names and no paths from the home
+directory.
 """
 import importlib.util
 import os
@@ -11,8 +12,8 @@ import platform
 import shutil
 import sys
 
-from . import packs
-from .common import BRANDS, ENGINE, RUNTIME, DeckError
+from . import lock, packs
+from .common import BRANDS, ENGINE, RUNTIME, SKILL, DeckError
 
 try:
     from importlib.metadata import PackageNotFoundError, version as package_version
@@ -108,6 +109,22 @@ def pack_status():
     return status
 
 
+def engine_edits():
+    """One line on how this Engine copy differs from the release in engine.lock."""
+    path = SKILL / "engine.lock"
+    if not path.is_file():
+        return "unknown (no engine.lock)"
+    try:
+        recorded = lock.read(path)
+    except ValueError:
+        return "unknown (engine.lock cannot be read)"
+    edited, removed, added = lock.local_edits(ENGINE, recorded)
+    parts = list(edited) + [f"{name} (removed)" for name in removed]
+    if added:
+        parts.append(f"{added} added file(s), names withheld")
+    return ", ".join(parts) if parts else "none"
+
+
 def report():
     status = pack_status()
     deps = "\n".join(f"- {package}: {dependency(module, package) or 'not installed'}"
@@ -122,7 +139,7 @@ def report():
         f"- OS: {os_name()}\n"
         f"- Browsers: {', '.join(found) if found else 'none found'}\n"
         f"- Engine files: {len(ENGINE_FILES) - len(missing)}/{len(ENGINE_FILES)} present\n"
-        "- Engine files edited locally: unknown (no engine.lock)\n"
+        f"- Engine files edited locally: {engine_edits()}\n"
         f"- Brand packs: {len(status) - 1} plus the hidden test pack, {valid} of {len(status)} valid\n"
         "\n## Optional dependencies\n"
         f"{deps}\n"

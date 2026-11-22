@@ -1,0 +1,46 @@
+# A merge to main whose __SKILL__ version has no tag yet publishes that version as a release.
+name: __SKILL__-release
+
+on:
+  push:
+    branches: [main]
+    #@shared paths:
+    #@shared   - __PLUGIN_DIR__/**
+    #@shared   - .github/workflows/__SKILL__-release.yml
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: __PLUGIN_DIR__
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Publish this version unless it is released
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version="$(jq -r .version .claude-plugin/plugin.json)"
+          tag="__TAG_PREFIX__$version"
+          if git rev-parse --verify --quiet "refs/tags/$tag" >/dev/null; then
+            echo "$tag is already released."
+            exit 0
+          fi
+          #@standalone gh release create "$tag" --target "$GITHUB_SHA" --title "$tag" --generate-notes
+          #@shared # Notes start at this plugin's previous release, and the repo's "Latest" is not any one plugin's.
+          #@shared notes=(--generate-notes)
+          #@shared previous="$(git tag --list "__TAG_PREFIX__*" --sort=-v:refname | head -n 1)"
+          #@shared if [ -n "$previous" ]; then notes+=(--notes-start-tag "$previous"); fi
+          #@shared gh release create "$tag" --target "$GITHUB_SHA" --title "__SKILL__ v$version" "${notes[@]}" --latest=false
