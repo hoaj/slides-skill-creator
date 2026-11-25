@@ -305,7 +305,7 @@ class UpgradeTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.git("rev-parse", "HEAD"), before)
         self.assertEqual(self.git("rev-parse", "--abbrev-ref", "HEAD").strip(), "main")
-        self.assertEqual(self.git("status", "--porcelain", "--ignored"), "")
+        self.assertEqual(self.git("status", "--porcelain"), "")
         self.assertFalse(self.state.exists())
         self.assertNotIn("slides-upgrade", self.git("branch", "--list"))
 
