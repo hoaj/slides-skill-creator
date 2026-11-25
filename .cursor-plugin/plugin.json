@@ -1,0 +1,15 @@
+{
+  "name": "slides-skill-creator",
+  "description": "Create and maintain on-brand slide deck skills from a shared, versioned Engine.",
+  "version": "0.1.0-dev",
+  "author": {
+    "name": "hoaj"
+  },
+  "homepage": "https://github.com/hoaj/slides-skill-creator",
+  "repository": "https://github.com/hoaj/slides-skill-creator",
+  "license": "MIT",
+  "skills": [
+    "./skills/slides-skill-creator",
+    "./skills/slides-skill-creator-feedback"
+  ]
+}

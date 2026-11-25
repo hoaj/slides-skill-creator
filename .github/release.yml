@@ -1,0 +1,10 @@
+# Categories for generated release notes. A maintainer sets `visual-change` on a pull request
+# after reviewing the difference it makes to a deck.
+changelog:
+  categories:
+    - title: Visual changes
+      labels:
+        - visual-change
+    - title: Other changes
+      labels:
+        - "*"
