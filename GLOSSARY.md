@@ -20,6 +20,10 @@ _Avoid_: generated plugin, brand skill, deck skill
 Everything that makes a deck belong to one brand: its look, its design rules and its Playbook.
 _Avoid_: theme, brand kit
 
+**Brand card**:
+The Generator's summary of a brand's values, each with its source, that the maintainer approves before a Brand pack is written.
+_Avoid_: brand sheet, style summary
+
 **Starter files**:
 The files the Generator gives a new Slides skill that are neither Engine nor Brand pack, and that the Slides skill then owns.
 _Avoid_: template, scaffold, boilerplate
