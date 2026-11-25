@@ -26,17 +26,15 @@ import tarfile
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "engine"))
 
-from lib import lock  # noqa: E402
-from lib.validate import FORMAT_VERSION  # noqa: E402
+from lib import lock, releases  # noqa: E402
 
 MANIFESTS = (".claude-plugin/plugin.json", ".cursor-plugin/plugin.json", ".github/plugin/plugin.json")
 # What a user installs or Upgrade receives. A pull request that changes one must raise the version.
 SHIPPED = ("engine", "starter", "upgrade", "migrations", "skills", "brands", "examples",
            ".claude-plugin", ".cursor-plugin", ".github/plugin", "LICENSE")
-# The archive's top-level folders. upgrade/ and migrations/ are added once Upgrade exists.
-ARCHIVE_REQUIRED = ("engine", "starter")
-ARCHIVE_OPTIONAL = ("upgrade", "migrations")
-VERSION = re.compile(r"(\d+)\.(\d+)\.(\d+)(?:-(dev|rc\.(\d+)))?")
+# The archive's top-level folders, the ones Upgrade unpacks.
+ARCHIVE_FOLDERS = releases.ARCHIVE_FOLDERS
+VERSION = releases.VERSION
 
 
 class ReleaseError(Exception):
@@ -45,12 +43,10 @@ class ReleaseError(Exception):
 
 def parse(version):
     """A sort key: X.Y.Z-dev < X.Y.Z-rc.1 < X.Y.Z-rc.2 < X.Y.Z."""
-    m = VERSION.fullmatch(version)
-    if not m:
-        raise ReleaseError(f"{version!r} is not X.Y.Z, X.Y.Z-rc.N or X.Y.Z-dev")
-    major, minor, patch, pre, rc = m.groups()
-    stage = (2, 0) if pre is None else (0, 0) if pre == "dev" else (1, int(rc))
-    return (int(major), int(minor), int(patch)) + stage
+    try:
+        return releases.parse(version)
+    except releases.ReleaseError as e:
+        raise ReleaseError(str(e))
 
 
 def _git(root, *args):
@@ -119,15 +115,22 @@ def plan(root):
     }
 
 
+def format_version(root):
+    """The Brand pack format of the Engine in `root`, read from its source rather than imported."""
+    text = (root / "engine" / "lib" / "validate.py").read_text(encoding="utf-8")
+    m = re.search(r"^FORMAT_VERSION = (\d+)$", text, re.M)
+    if not m:
+        raise ReleaseError("engine/lib/validate.py has no FORMAT_VERSION")
+    return int(m.group(1))
+
+
 def _archive_files(root):
     """{archive path: bytes} for every file the archive holds, with lock's ignore rules."""
     files = {}
-    for folder in ARCHIVE_REQUIRED + ARCHIVE_OPTIONAL:
+    for folder in ARCHIVE_FOLDERS:
         path = root / folder
         if not path.is_dir():
-            if folder in ARCHIVE_REQUIRED:
-                raise ReleaseError(f"{folder}/ is missing")
-            continue
+            raise ReleaseError(f"{folder}/ is missing")
         for relative in lock.file_hashes(path):
             files[f"{folder}/{relative}"] = (path / relative).read_bytes()
     return dict(sorted(files.items()))
@@ -159,20 +162,19 @@ def build(root, out):
     """Write the three release assets to `out` and return their names."""
     root = pathlib.Path(root)
     current = version(root)
-    folders = [f for f in ARCHIVE_REQUIRED + ARCHIVE_OPTIONAL if (root / f).is_dir()]
-    dirty = [line for line in _git(root, "status", "--porcelain", "--", *folders).splitlines()
+    dirty = [line for line in _git(root, "status", "--porcelain", "--", *ARCHIVE_FOLDERS).splitlines()
              if not lock._ignored(pathlib.PurePosixPath(line[3:].strip('"')))]
     if dirty:
         raise ReleaseError("uncommitted changes would not match the commit: " + "; ".join(dirty))
 
     files = _archive_files(root)
-    archive = f"slides-skill-{current}.tar.gz"
+    archive = releases.archive_name(current)
     manifest = {
         "version": current,
         "commit": _git(root, "rev-parse", "HEAD").strip(),
         "engineTreeHash": lock.tree_hash(root / "engine"),
         "starterTreeHash": lock.tree_hash(root / "starter"),
-        "formatVersion": FORMAT_VERSION,
+        "formatVersion": format_version(root),
         "files": {name: _sha256(data) for name, data in files.items()},
     }
     assets = {

@@ -12,9 +12,11 @@
     python3 <skill>/engine/deck.py sample --brand <slug> [out.html] [--open]
     python3 <skill>/engine/deck.py compare <old-engine> <new-engine> --brand <slug> [--out <dir>] [--json]
     python3 <skill>/engine/deck.py doctor [--report]
+    python3 <skill>/engine/deck.py upgrade [--to X.Y.Z] [--check]
 
 Everything but the PowerPoint commands and `compare` needs only Python 3.8+. Those import
-their optional dependencies when they run, and say how to install what is missing.
+their optional dependencies when they run, and say how to install what is missing. `upgrade`
+also needs git and `gh` 2.81 or later.
 Generated output never goes into the skill folder.
 """
 import argparse
@@ -128,6 +130,14 @@ def cmd_doctor(args):
     return doctor.run(report_only=args.report)
 
 
+def cmd_upgrade(args):
+    from lib import releases, upgrade
+    try:
+        return upgrade.run(args.to, args.check)
+    except releases.ReleaseError as e:
+        raise DeckError(str(e))
+
+
 def parser():
     ap = argparse.ArgumentParser(prog="deck.py", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -201,6 +211,11 @@ def parser():
     p.add_argument("--report", action="store_true",
                    help="print a redacted environment report for a bug report")
     p.set_defaults(func=cmd_doctor)
+
+    p = sub.add_parser("upgrade", help="move this Slides skill to a newer Engine release in a PR")
+    p.add_argument("--to", help="the release to move to (default: the newest stable release)")
+    p.add_argument("--check", action="store_true", help="only report whether a newer release exists")
+    p.set_defaults(func=cmd_upgrade)
     return ap
 
 

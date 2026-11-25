@@ -22,13 +22,13 @@ IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", ".DS_Store")
 
 
 class Repo:
-    """A throwaway git repo with the version files, a copy of engine/ and starter/."""
+    """A throwaway git repo with the version files and a copy of the archive's folders."""
 
     def __init__(self, version="0.1.0-dev"):
         self._tmp = tempfile.TemporaryDirectory()
         self.root = pathlib.Path(self._tmp.name).resolve()
-        shutil.copytree(REPO / "engine", self.root / "engine", ignore=IGNORE)
-        shutil.copytree(REPO / "starter", self.root / "starter", ignore=IGNORE)
+        for folder in release.ARCHIVE_FOLDERS:
+            shutil.copytree(REPO / folder, self.root / folder, ignore=IGNORE)
         self.git("init", "-q", "-b", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "test")
@@ -165,17 +165,19 @@ class BuildTest(unittest.TestCase):
                                          "slides-skill-0.1.0-rc.1.tar.gz"])
         self.assertEqual(first, self.build("b"))
 
-    def test_the_archive_holds_only_plain_files_under_engine_and_starter(self):
+    def test_the_archive_holds_only_plain_files_in_its_four_folders(self):
         assets = self.build()
         with tarfile.open(fileobj=io.BytesIO(assets["slides-skill-0.1.0-rc.1.tar.gz"])) as tar:
             members = tar.getmembers()
         self.assertTrue(members)
         for m in members:
             self.assertTrue(m.isfile(), m.name)
-            self.assertIn(m.name.split("/")[0], ("engine", "starter"))
+            self.assertIn(m.name.split("/")[0], ("engine", "starter", "upgrade", "migrations"))
             self.assertEqual((m.mode, m.mtime, m.uid, m.gid, m.uname, m.gname),
                              (0o644, 0, 0, 0, "", ""))
-        self.assertIn("engine/deck.py", [m.name for m in members])
+        names = [m.name for m in members]
+        for name in ("engine/deck.py", "starter/render.py", "upgrade/upgrade.py", "migrations/README.md"):
+            self.assertIn(name, names)
         self.assertNotIn("engine/lib/__pycache__", "".join(m.name for m in members))
 
     def test_the_manifest_matches_engine_lock_and_the_files(self):
@@ -202,22 +204,15 @@ class BuildTest(unittest.TestCase):
                     for n in ("release-manifest.json", "slides-skill-0.1.0-rc.1.tar.gz")]
         self.assertEqual(lines, expected)
 
-    def test_upgrade_and_migrations_are_included_when_present(self):
-        self.repo.write("upgrade/run.py", "print()\n")
-        self.repo.write("migrations/README.md", "none\n")
-        self.repo.commit("upgrade")
-        manifest = json.loads(self.build()["release-manifest.json"])
-        self.assertIn("upgrade/run.py", manifest["files"])
-        self.assertIn("migrations/README.md", manifest["files"])
-
     def test_uncommitted_changes_are_refused(self):
         self.repo.write("engine/deck.py", "edited\n")
         with self.assertRaisesRegex(release.ReleaseError, "uncommitted changes"):
             self.build()
 
-    def test_a_missing_engine_is_refused(self):
-        shutil.rmtree(str(self.repo.root / "starter"))
-        with self.assertRaisesRegex(release.ReleaseError, "starter/ is missing"):
+    def test_a_missing_folder_is_refused(self):
+        shutil.rmtree(str(self.repo.root / "upgrade"))
+        self.repo.commit("no upgrade code")
+        with self.assertRaisesRegex(release.ReleaseError, "upgrade/ is missing"):
             self.build()
 
 
