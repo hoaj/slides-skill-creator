@@ -38,6 +38,12 @@ says.
 `python3 <skill>/engine/deck.py upgrade` moves it to a newer Engine release and opens a PR, and
 `python3 <skill>/engine/deck.py check` validates its Brand packs.
 
+When Upgrade stops for you (exit 3), it lists each file or migration flag in the `decisions.md`
+it names. Resolve each file in place, replace each `Decision: TODO` with what you decided and why,
+then run the `continue` command it prints. Keep `name`, `description` and `## Local rules` in
+`SKILL.md` as they are. If a check fails and you cannot fix it, `continue --draft` opens a draft
+PR with the failure report; `abort` undoes the upgrade. Never merge the PR: the maintainer does.
+
 ## The flow
 
 `new` and `add-brand` take every step; `edit-brand` takes the steps its change touches and always
