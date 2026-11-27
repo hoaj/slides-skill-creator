@@ -52,9 +52,6 @@ Cursor: Settings, Plugins, Add marketplace, `hoaj/slides-skill-creator`, then in
 **slides-skill-creator**. Cursor's marketplaces cannot list a plugin from another repo, so this
 repo has its own.
 
-Until v0.1.0 is released, clone this repo and start Claude Code with
-`claude --plugin-dir <clone>`, where `<clone>` is the clone's root folder.
-
 Then ask your agent. To try it on the fictional brand Acme first:
 
 ```text
