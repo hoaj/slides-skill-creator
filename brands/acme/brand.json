@@ -66,6 +66,7 @@
       "style": "normal"
     }
   ],
+  "pptxLead": [0.373, 0.3427, 0.9407],
   "numberFormat": {
     "thousands": ",",
     "decimal": "."

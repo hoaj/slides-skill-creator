@@ -42,7 +42,7 @@ class ValidatorTest(unittest.TestCase):
     def test_acme_passes(self):
         self.ws.add_acme()
         result = self.assert_passes("acme")
-        self.assertIn("acme: valid, 0 error(s), 1 warning(s)", result.stdout)
+        self.assertIn("acme: valid, 0 error(s), 0 warning(s)", result.stdout)
 
     def test_check_without_a_brand_covers_every_pack(self):
         self.ws.add_acme()
