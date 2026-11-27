@@ -54,7 +54,7 @@ class Repo:
 
     def commit(self, message):
         self.git("add", "-A")
-        self.git("commit", "-q", "-m", message)
+        self.git("commit", "-q", "--allow-empty", "-m", message)
 
 
 class VersionTest(unittest.TestCase):
@@ -136,6 +136,12 @@ class PlanTest(unittest.TestCase):
         self.assertEqual(release.plan(self.repo.root), {
             "version": "0.1.0-rc.2", "tag": "v0.1.0-rc.2", "release": True,
             "prerelease": True, "previous": "v0.1.0-rc.1"})
+
+    def test_latest_is_the_newest_tag_or_nothing(self):
+        self.assertEqual(release.released(self.repo.root), [])
+        for tag in ("v0.1.0-rc.1", "v0.1.0-rc.2", "v0.0.9", "not-a-version"):
+            self.repo.git("tag", tag)
+        self.assertEqual(release.released(self.repo.root)[-1], "0.1.0-rc.2")
 
     def test_a_tagged_version_is_not_released_again(self):
         self.repo.set_version("0.1.0")

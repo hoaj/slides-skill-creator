@@ -168,7 +168,7 @@ and its dependencies under their own licences, in [`engine/licenses/`](./engine/
 | Optional, as `deck.py doctor` reports | `python-pptx` and `playwright` for PowerPoint export and import; `fonttools` and `brotli` for font files; `numpy`, `pymupdf` and `pillow` with Chrome for `compare` |
 | PowerPoint calibration | optional; exported through PowerPoint on macOS, or by hand elsewhere |
 | Trigger evals | Claude Code 2.1.269 or later |
-| Releases | one `vX.Y.Z` line; `deck.py upgrade` needs `git` and `gh` 2.81 or later |
+| Releases | one `vX.Y.Z` line; `deck.py upgrade` needs `git` and `gh` 2.81 or later, logged in, because it verifies the release with GitHub and opens a pull request |
 
 ## Contributing and feedback
 

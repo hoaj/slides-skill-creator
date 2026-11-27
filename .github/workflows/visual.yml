@@ -1,0 +1,88 @@
+# Each Sample deck, built by the newest release's Engine and by this pull request's Engine, compared
+# as HTML, PDF and PowerPoint. A difference fails the check until a maintainer reviews the report
+# (the visual-report artifact) and sets the visual-change label.
+name: visual
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+    paths:
+      - engine/**
+      - brands/**
+      - .github/workflows/visual.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Fetch the newest release's Engine
+        id: base
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="$(python3 scripts/release.py latest)"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [ -z "$version" ]; then
+            echo "No release yet, so there is nothing to compare against." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          gh release download "v$version" --repo "$GITHUB_REPOSITORY" \
+            --pattern "slides-skill-$version.tar.gz" --dir "$RUNNER_TEMP"
+          mkdir "$RUNNER_TEMP/base"
+          tar -xzf "$RUNNER_TEMP/slides-skill-$version.tar.gz" -C "$RUNNER_TEMP/base"
+      - name: Install the comparison tools
+        if: steps.base.outputs.version != ''
+        run: python3 -m pip install playwright python-pptx pymupdf numpy pillow fonttools brotli
+      - name: Compare each Sample deck with v${{ steps.base.outputs.version }}
+        id: compare
+        if: steps.base.outputs.version != ''
+        run: |
+          echo "### Sample decks against v${{ steps.base.outputs.version }}" >> "$GITHUB_STEP_SUMMARY"
+          difference=0
+          for pack in brands/*/brand.json engine/fixtures/plain/brand.json; do
+            slug="$(basename "$(dirname "$pack")")"
+            set +e
+            python3 engine/deck.py compare "$RUNNER_TEMP/base/engine" engine --brand "$slug" \
+              --out "$RUNNER_TEMP/visual-report/$slug" > "$RUNNER_TEMP/$slug.txt"
+            code=$?
+            set -e
+            cat "$RUNNER_TEMP/$slug.txt" | tee -a "$GITHUB_STEP_SUMMARY"
+            if [ "$code" = 2 ]; then
+              echo "::error::the comparison for $slug could not run"
+              exit 2
+            fi
+            if [ "$code" = 1 ]; then difference=1; fi
+          done
+          echo "difference=$difference" >> "$GITHUB_OUTPUT"
+      - name: Upload the before-and-after report
+        if: always() && steps.base.outputs.version != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-report
+          path: ${{ runner.temp }}/visual-report
+          if-no-files-found: ignore
+      - name: Accept a reviewed difference
+        if: steps.compare.outputs.difference == '1'
+        env:
+          ACCEPTED: ${{ contains(github.event.pull_request.labels.*.name, 'visual-change') }}
+        run: |
+          if [ "$ACCEPTED" = true ]; then
+            echo "visual-change is set, so the difference is accepted." | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::error::a Sample deck looks different. Review the visual-report artifact, then set the visual-change label to accept it."
+            exit 1
+          fi

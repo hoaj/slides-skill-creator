@@ -3,6 +3,7 @@
 
     python3 scripts/release.py check-version [--base <git ref>]
     python3 scripts/release.py plan
+    python3 scripts/release.py latest
     python3 scripts/release.py build --out <folder>
 
 One version covers the Engine and the Generator. It lives in engine/VERSION and the three
@@ -196,12 +197,15 @@ def main(argv=None):
     check = sub.add_parser("check-version", help="the version rules for a pull request or push")
     check.add_argument("--base", help="the pull request's base, such as origin/main")
     sub.add_parser("plan", help="print what the release workflow does, as key=value lines")
+    sub.add_parser("latest", help="print the newest released version, or nothing before the first")
     make = sub.add_parser("build", help="write the release assets")
     make.add_argument("--out", required=True, help="folder for the assets")
     args = p.parse_args(argv)
     try:
         if args.command == "check-version":
             print(check_version(ROOT, args.base))
+        elif args.command == "latest":
+            print((released(ROOT) or [""])[-1])
         elif args.command == "plan":
             for key, value in plan(ROOT).items():
                 print(f"{key}={str(value).lower() if isinstance(value, bool) else value}")

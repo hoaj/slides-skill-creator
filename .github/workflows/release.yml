@@ -65,7 +65,12 @@ jobs:
           GH_REPO: ${{ github.repository }}
           TAG: ${{ steps.plan.outputs.tag }}
         run: |
-          gh release verify "$TAG"
+          # GitHub attests an immutable release a moment after it is published.
+          for wait in 5 10 20 40; do
+            if gh release verify "$TAG"; then break; fi
+            if [ "$wait" = 40 ]; then exit 1; fi
+            sleep "$wait"
+          done
           for asset in dist/*; do
             gh release verify-asset "$TAG" "$asset"
             gh attestation verify "$asset" --repo "$GH_REPO" \
