@@ -18,7 +18,7 @@ import merge  # noqa: E402
 import release  # noqa: E402
 
 OLD, NEW = "0.1.0-rc.1", "0.1.0-rc.2"
-VALUES = {"skill": "acme-slides", "description": "Builds decks for Acme (Acme Corp, Acme Inc). Not for other brands.",
+VALUES = {"skill": "acme-slides", "description": "Builds decks for Acme. Not for other brands.",
           "repo": "example/acme-slides", "author": "Example"}
 MIGRATION = '''import json
 

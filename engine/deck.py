@@ -8,7 +8,7 @@
     python3 <skill>/engine/deck.py inspect deck.html [--json]
     python3 <skill>/engine/deck.py export-pptx deck.html deck.pptx
     python3 <skill>/engine/deck.py extract-pptx in.pptx [out_dir]
-    python3 <skill>/engine/deck.py check [--brand <slug>]
+    python3 <skill>/engine/deck.py check [--brand <slug> | --packs]
     python3 <skill>/engine/deck.py sample --brand <slug> [out.html] [--open]
     python3 <skill>/engine/deck.py compare <old-engine> <new-engine> --brand <slug> [--out <dir>] [--json]
     python3 <skill>/engine/deck.py doctor [--report]
@@ -70,7 +70,7 @@ def cmd_check(args):
             print(f"  warning: {problem}")
     checked = f"{len(slugs)} Brand pack(s)"
     skill_md = SKILL / "SKILL.md"
-    if not args.brand and skill_md.is_file():
+    if not (args.brand or args.packs) and skill_md.is_file():
         from lib import triggers
         problems = triggers.check_skill(skill_md, [(n, a) for _, n, a in packs.list_packs()[0]])
         errors += len(problems)
@@ -146,7 +146,7 @@ def cmd_eval(args):
     """Exit 0 when every case passes, 1 when one fails, 2 when the evals could not run."""
     from lib import packs, triggers
     try:
-        brands = [(name, aliases) for _, name, aliases in packs.list_packs()[0]]
+        brands = packs.list_packs()[0]
         if not brands:
             raise DeckError(f"no Brand packs in {packs.BRANDS}")
         if args.out:
@@ -190,6 +190,8 @@ def parser():
 
     p = sub.add_parser("check", help="validate Brand packs and print every problem")
     p.add_argument("--brand", help="check only this Brand pack")
+    p.add_argument("--packs", action="store_true",
+                   help="check only the Brand packs, not SKILL.md's trigger description")
     p.set_defaults(func=cmd_check)
 
     p = sub.add_parser("deck-types", help="list a Brand pack's Deck types")

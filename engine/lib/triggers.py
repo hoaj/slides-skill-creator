@@ -29,19 +29,22 @@ MAX_TURNS = 3
 
 def frontmatter(text):
     """{key: value} of a SKILL.md's frontmatter, for one-line values (plain, or quoted as JSON)."""
-    lines = text.splitlines()
+    lines = text.lstrip("\ufeff").splitlines()
     if not lines or lines[0].strip() != "---":
         raise DeckError("SKILL.md has no frontmatter (it must start with a --- line)")
-    try:
-        end = lines.index("---", 1)
-    except ValueError:
+    end = next((i for i, line in enumerate(lines[1:], 1) if line.strip() == "---"), None)
+    if end is None:
         raise DeckError("SKILL.md's frontmatter has no closing --- line")
-    values = {}
+    values, last = {}, None
     for line in lines[1:end]:
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
         key, sep, value = line.partition(":")
         if not sep or line[:1].isspace():
-            values.setdefault("_continued", True)
+            if last in ("name", "description"):
+                values["_continued"] = True
             continue
+        last = key.strip()
         value = value.strip()
         if value.startswith('"'):
             try:
@@ -83,7 +86,7 @@ def check_text(text, folder, brands=()):
     lowered = description.lower()
     for brand, aliases in brands:
         for term in [brand, *aliases]:
-            if term.lower() not in lowered:
+            if not re.search(r"(?<!\w)" + re.escape(term.lower()) + r"(?!\w)", lowered):
                 problems.append(f"the description does not name {term!r}, so a request that says "
                                 "it may not start the skill")
     return problems
@@ -103,12 +106,12 @@ def case(name, prompt, expect, says=None, max_turns=MAX_TURNS):
 
 
 def slides_cases(skill, brands):
-    """The suite of one Slides skill: each brand by name and alias, and two it must leave alone."""
-    named = " ".join(term for brand, aliases in brands for term in [brand, *aliases]).lower()
+    """The suite of one Slides skill: each brand by name and alias, and two it must leave alone.
+    `brands` is [(slug, name, [alias])]; the unique slug names the cases."""
+    named = " ".join(term for _, brand, aliases in brands for term in [brand, *aliases]).lower()
     unknown = next((b for b in UNKNOWN_BRANDS if b.lower() not in named), None)
     cases = []
-    for brand, aliases in brands:
-        slug = re.sub(r"[^a-z0-9]+", "-", brand.lower()).strip("-") or "brand"
+    for slug, brand, aliases in brands:
         cases.append(case(f"deck-{slug}", f"Make a five-slide deck for {brand} about next "
                                           "quarter's priorities.", skill))
         for i, alias in enumerate(aliases, 1):
@@ -129,7 +132,10 @@ def plugin_skills(skill_dir):
     if skill_dir.parent.name != "skills" or not manifest.is_file():
         raise DeckError(f"{skill_dir} is not in a plugin's skills/ folder next to "
                         ".claude-plugin/plugin.json")
-    listed = json.loads(manifest.read_text(encoding="utf-8")).get("skills") or []
+    try:
+        listed = json.loads(manifest.read_text(encoding="utf-8")).get("skills") or []
+    except (OSError, ValueError, AttributeError) as e:
+        raise DeckError(f"{manifest} cannot be read: {e}")
     folders = [(manifest.parent.parent / p).resolve() for p in listed]
     missing = [str(f) for f in folders if not (f / "SKILL.md").is_file()]
     if missing:
@@ -189,23 +195,26 @@ def build_plugin(out, skills, cases):
 
 # --- running and judging ---------------------------------------------------------------------
 
-def verdicts(report, cases):
-    """[{case, passed, starts, quiet, runs}] from `claude plugin eval --json` by the pass rule."""
+def verdicts(report, cases, skills):
+    """[{case, passed, starts, quiet, runs}] from `claude plugin eval --json` by the pass rule.
+    `skills` are the plugin's skill names: each must be graded in every run that counts."""
     by_name = {c.get("name"): c for c in report.get("cases", [])}
     results = []
     for c in cases:
         runs = (by_name.get(c["name"]) or {}).get("arms", {}).get("with", []) or []
         starts = quiet = 0
+        quiet_names = {f"quiet-{s}" for s in skills if s != c["expect"]}
+        start_names = ({f"starts-{c['expect']}"} if c["expect"] else set()) | ({"says"} if c["says"] else set())
         for run in runs:
             error = run.get("error") or ""
             # A trigger case is meant to stop soon after the first skill call, so reaching the turn
             # limit is no failure: its graders still judge the run. Any other error is one.
             if (error and "maximum number of turns" not in error) or run.get("aborted"):
                 continue
-            graders = run.get("graders", [])
-            if all(g.get("passed") for g in graders if g.get("name", "").startswith("quiet-")):
+            passed = {g.get("name") for g in run.get("graders", []) if g.get("passed")}
+            if quiet_names <= passed:
                 quiet += 1
-            if all(g.get("passed") for g in graders if not g.get("name", "").startswith("quiet-")):
+            if start_names <= passed:
                 starts += 1
         total = len(runs)
         passed = total > 0 and quiet == total
@@ -225,10 +234,16 @@ def run_claude(plugin, runs, model, report_path):
            "--no-publish", "--trust-plugin", "--json", str(report_path)]
     if model:
         cmd += ["--model", model]
-    result = subprocess.run(cmd)
+    try:
+        result = subprocess.run(cmd)
+    except OSError as e:
+        raise DeckError(f"`claude` could not start: {e}")
     if result.returncode not in (0, 1) or not pathlib.Path(report_path).is_file():
         raise DeckError(f"`claude plugin eval` could not finish (exit {result.returncode})")
-    report = json.loads(pathlib.Path(report_path).read_text(encoding="utf-8"))
+    try:
+        report = json.loads(pathlib.Path(report_path).read_text(encoding="utf-8"))
+    except ValueError as e:
+        raise DeckError(f"the eval report is not valid JSON: {e}")
     if report.get("partial"):
         raise DeckError(f"`claude plugin eval` stopped early: {report.get('partialReason')}")
     return report
@@ -236,10 +251,12 @@ def run_claude(plugin, runs, model, report_path):
 
 def run(skills, cases, runs=RUNS, model=None, out=None):
     """Build the plugin, run the evals and judge them. (passed, results, report path or None)."""
+    if runs < 1:
+        raise DeckError("--runs must be 1 or more")
     if out:
         out = pathlib.Path(out).resolve()
-        if out.exists() and any(out.iterdir()):
-            raise DeckError(f"{out} is not empty")
+        if out.exists() and (not out.is_dir() or any(out.iterdir())):
+            raise DeckError(f"{out} is not an empty folder")
         workdir, tmp = out, None
     else:
         tmp = tempfile.TemporaryDirectory()
@@ -247,7 +264,8 @@ def run(skills, cases, runs=RUNS, model=None, out=None):
     try:
         plugin = build_plugin(workdir / "plugin", skills, cases)
         report_path = workdir / "report.json"
-        results = verdicts(run_claude(plugin, runs, model, report_path), cases)
+        names = [pathlib.Path(s).name for s in skills]
+        results = verdicts(run_claude(plugin, runs, model, report_path), cases, names)
     finally:
         if tmp:
             tmp.cleanup()

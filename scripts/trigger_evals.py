@@ -121,8 +121,8 @@ def main(argv=None):
             skills = competing_skills(tmp)
             if args.command == "build":
                 out = pathlib.Path(args.out).resolve()
-                if out.exists() and any(out.iterdir()):
-                    raise DeckError(f"{out} is not empty")
+                if out.exists() and (not out.is_dir() or any(out.iterdir())):
+                    raise DeckError(f"{out} is not an empty folder")
                 triggers.build_plugin(out, skills, CASES)
                 print(f"Wrote the test plugin to {out}")
                 return 0

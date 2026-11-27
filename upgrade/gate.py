@@ -43,7 +43,8 @@ def run(skill, plugin, before_engine, out):
     deck_py = skill / "engine" / "deck.py"
     checks = []
 
-    result = _run([sys.executable, deck_py, "check"], out)
+    # Upgrade never changes SKILL.md's description, so its trigger is the maintainer's to check.
+    result = _run([sys.executable, deck_py, "check", "--packs"], out)
     errors = [l.strip() for l in result.stdout.splitlines() if l.strip().startswith("error: ")]
     checks.append({"name": "deck.py check", "status": "pass" if result.returncode == 0 else "fail",
                    "detail": "; ".join(errors) or _last(result)})

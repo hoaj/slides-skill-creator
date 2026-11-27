@@ -19,6 +19,7 @@ from lib.common import DeckError  # noqa: E402
 import trigger_evals  # noqa: E402
 
 ACME_BRANDS = [("Acme", ["acme corp", "acme inc"])]
+ACME_PACKS = [("acme", "Acme", ["acme corp", "acme inc"])]
 GOOD = ('---\nname: acme-slides\ndescription: "Builds decks for Acme (\\"Acme Corp\\", '
         '\\"Acme Inc\\"). Not for other brands."\n---\n\n# acme-slides\n')
 FAKE = REPO / "tests" / "fake_claude.py"
@@ -58,6 +59,16 @@ class CheckTest(unittest.TestCase):
         text = skill_md("For ACME, Acme Corp and ACME INC. Not for others.")
         self.assertEqual(triggers.check_text(text, "acme-slides", ACME_BRANDS), [])
 
+    def test_an_alias_inside_another_word_does_not_count(self):
+        problems = triggers.check_text(skill_md("Always for Acme. Not for others."), "acme-slides",
+                                       [("Acme", ["ys"])])
+        self.assertTrue(any("'ys'" in p for p in problems), problems)
+
+    def test_other_frontmatter_keys_comments_and_a_bom_are_fine(self):
+        text = ("\ufeff---\nname: acme-slides\n# a comment\n\ndescription: Acme. Not for x.\n"
+                "allowed-tools:\n  - Bash\n--- \n")
+        self.assertEqual(triggers.check_text(text, "acme-slides", []), [])
+
 
 class GeneratorSuiteTest(unittest.TestCase):
     def test_the_static_check_passes_on_this_repo(self):
@@ -87,16 +98,20 @@ class GeneratorSuiteTest(unittest.TestCase):
 
 class CasesTest(unittest.TestCase):
     def test_each_brand_and_alias_gets_a_case_and_two_must_stay_quiet(self):
-        cases = triggers.slides_cases("acme-slides", ACME_BRANDS)
+        cases = triggers.slides_cases("acme-slides", ACME_PACKS)
         self.assertEqual([c["name"] for c in cases],
                          ["deck-acme", "alias-acme-1", "alias-acme-2", "other-brand", "fix-pptx"])
         self.assertIn("acme inc", cases[2]["prompt"])
         self.assertEqual([c["expect"] for c in cases[-2:]], [None, None])
 
     def test_the_other_brand_is_never_one_the_skill_names(self):
-        cases = triggers.slides_cases("x-slides", [("Brightfield", ["larkspur"])])
+        cases = triggers.slides_cases("x-slides", [("bf", "Brightfield", ["larkspur"])])
         other = next(c for c in cases if c["name"] == "other-brand")
         self.assertIn("Quillon", other["prompt"])
+
+    def test_cases_are_named_by_the_unique_slug(self):
+        cases = triggers.slides_cases("x-slides", [("ae", "Æbleø", []), ("oe", "Øø", [])])
+        self.assertEqual([c["name"] for c in cases[:2]], ["deck-ae", "deck-oe"])
 
     def test_the_start_pattern_matches_only_that_skill(self):
         pattern = re.compile(triggers._skill_pattern("acme-slides"))
@@ -125,7 +140,7 @@ class VerdictTest(unittest.TestCase):
 
     def verdict(self, case, runs):
         report = {"cases": [{"name": case["name"], "arms": {"with": runs}}]}
-        return triggers.verdicts(report, [case])[0]
+        return triggers.verdicts(report, [case], ["acme-slides", "plain-slides"])[0]
 
     def test_a_start_may_be_missed_once_in_three(self):
         ok = run({"starts-acme-slides": True, "quiet-plain-slides": True})
@@ -137,20 +152,27 @@ class VerdictTest(unittest.TestCase):
         ok = run({"starts-acme-slides": True, "quiet-plain-slides": True})
         wrong = run({"starts-acme-slides": True, "quiet-plain-slides": False})
         self.assertFalse(self.verdict(self.START, [ok, ok, wrong])["passed"])
-        quiet = run({"quiet-acme-slides": True})
-        loud = run({"quiet-acme-slides": False})
+        quiet = run({"quiet-acme-slides": True, "quiet-plain-slides": True})
+        loud = run({"quiet-acme-slides": False, "quiet-plain-slides": True})
         self.assertTrue(self.verdict(self.QUIET, [quiet, quiet, quiet])["passed"])
         self.assertFalse(self.verdict(self.QUIET, [quiet, quiet, loud])["passed"])
 
     def test_a_run_cut_off_at_the_turn_limit_is_judged_by_its_graders(self):
         cut = {"error": "exit 1: Reached maximum number of turns (3)",
-               "graders": [{"name": "quiet-acme-slides", "passed": True}]}
+               "graders": [{"name": "quiet-acme-slides", "passed": True},
+                           {"name": "quiet-plain-slides", "passed": True}]}
         self.assertTrue(self.verdict(self.QUIET, [cut, cut, cut])["passed"])
+
+    def test_a_run_without_its_graders_counts_for_nothing(self):
+        empty = {"error": "exit 1: Reached maximum number of turns (3)", "graders": []}
+        self.assertFalse(self.verdict(self.START, [empty] * 3)["passed"])
+        self.assertFalse(self.verdict(self.QUIET, [empty] * 3)["passed"])
 
     def test_a_run_that_errored_or_a_missing_case_fails(self):
         errored = {"error": "api_error", "graders": []}
-        self.assertFalse(self.verdict(self.QUIET, [run({"quiet-acme-slides": True})] * 2 + [errored])["passed"])
-        self.assertFalse(triggers.verdicts({"cases": []}, [self.QUIET])[0]["passed"])
+        ok = run({"quiet-acme-slides": True, "quiet-plain-slides": True})
+        self.assertFalse(self.verdict(self.QUIET, [ok, ok, errored])["passed"])
+        self.assertFalse(triggers.verdicts({"cases": []}, [self.QUIET], ["acme-slides"])[0]["passed"])
 
 
 class DeckCommandsTest(unittest.TestCase):
@@ -191,9 +213,12 @@ class DeckCommandsTest(unittest.TestCase):
         self.assertIn("does not name 'acme corp'", result.stdout)
         self.assertIn("Checked 2 Brand pack(s) and SKILL.md: 2 error(s)", result.stdout)
 
-    def test_check_of_one_brand_leaves_skill_md_alone(self):
+    def test_check_of_one_brand_or_only_packs_leaves_skill_md_alone(self):
         (self.skill / "SKILL.md").write_text(skill_md("No brand here. Not for others."))
         self.assertEqual(self.deck("check", "--brand", "acme").returncode, 0)
+        result = self.deck("check", "--packs")
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn("SKILL.md", result.stdout)
 
     @unittest.skipIf(os.name == "nt", "the fake claude is a shell script")
     def test_eval_passes_fails_and_cannot_run(self):
@@ -211,6 +236,11 @@ class DeckCommandsTest(unittest.TestCase):
         self.assertEqual(self.deck("eval", FAKE_CLAUDE_MISS="deck-acme:1").returncode, 0)
         self.assertEqual(self.deck("eval", FAKE_CLAUDE_MISS="deck-acme:2").returncode, 1)
         self.assertEqual(self.deck("eval", FAKE_CLAUDE_EXIT="2").returncode, 2)
+        self.assertEqual(self.deck("eval", "--runs", "0").returncode, 2)
+        (self.plugin / ".claude-plugin" / "plugin.json").write_text("{,")
+        result = self.deck("eval")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("cannot be read", result.stderr)
 
     @unittest.skipIf(os.name == "nt", "the fake claude is a shell script")
     def test_eval_keeps_the_plugin_and_report_outside_the_skill(self):

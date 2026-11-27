@@ -123,8 +123,11 @@ A Slides skill holds:
 In the Slides skill's repo, ask the agent to upgrade it, or run:
 
 ```sh
-python3 skills/<name>-slides/engine/deck.py upgrade
+python3 <skill>/engine/deck.py upgrade
 ```
+
+`<skill>` is `skills/<name>-slides` in a repo of its own, and
+`plugins/<name>-slides/skills/<name>-slides` in a shared marketplace repo.
 
 It verifies the release (an immutable GitHub release with attested assets), merges the new Engine
 and Starter files three ways, migrates the Brand packs, rebuilds and compares each Sample deck,
@@ -139,7 +142,7 @@ every brand and alias and say what the skill is not for. When the description ch
 Generator offers the live evals, which need Claude Code and cost tokens:
 
 ```sh
-python3 skills/<name>-slides/engine/deck.py eval
+python3 <skill>/engine/deck.py eval
 ```
 
 Each case runs three times. A deck request for each brand and alias must start the skill at
