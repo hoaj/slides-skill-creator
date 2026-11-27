@@ -1,0 +1,14 @@
+{
+  "name": "slides-skill-creator",
+  "owner": { "name": "hoaj" },
+  "metadata": {
+    "description": "slides-skill-creator for Cursor. Claude Code and Copilot CLI install it from the hoaj marketplace in hoaj/plugins."
+  },
+  "plugins": [
+    {
+      "name": "slides-skill-creator",
+      "source": "./",
+      "description": "Create and maintain on-brand slide deck skills from a shared, versioned Engine."
+    }
+  ]
+}
