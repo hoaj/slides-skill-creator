@@ -47,7 +47,8 @@ JSON names `skillDir`: that is `<skill>` from here on.
 ## 4. Sample deck
 
 Take step 5 of the flow on `<skill>`. Changes now go into `<skill>/brands/<slug>/`; the draft in
-`<work>/packs/` is no longer used. Offer the PowerPoint calibration
+`<work>/packs/` is no longer used. Offer the [trigger evals](../SKILL.md#trigger-evals) for the
+new description. Offer the PowerPoint calibration
 ([powerpoint.md](powerpoint.md)) when the pack has font files and the maintainer has PowerPoint;
 without it, decks still export and the export warns.
 

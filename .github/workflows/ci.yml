@@ -1,5 +1,6 @@
 # One version across engine/VERSION and the manifests, raised when shipped files change; valid
-# manifests; the tests on the Engine's oldest and a current Python; and reproducible release assets.
+# manifests; the tests on the Engine's oldest and a current Python; reproducible release assets; and
+# every skill description, checked without running an agent.
 name: ci
 
 on:
@@ -68,6 +69,17 @@ jobs:
           python3 scripts/release.py build --out "$RUNNER_TEMP/second"
           diff -r "$RUNNER_TEMP/first" "$RUNNER_TEMP/second"
           cd "$RUNNER_TEMP/first" && sha256sum -c SHA256SUMS
+
+  descriptions:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Check every skill's name and trigger description
+        run: python3 scripts/trigger_evals.py check
 
   actionlint:
     runs-on: ubuntu-24.04

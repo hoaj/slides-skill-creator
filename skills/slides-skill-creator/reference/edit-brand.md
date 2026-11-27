@@ -22,7 +22,7 @@ with `deck.py check` at 0 errors and an approved Sample deck.
    | Design rules | Edit `brand.md`, and show the new text for approval |
 
    A name or alias change also needs a new trigger description, approved and set with
-   `gen.py describe`.
+   `gen.py describe`. Then offer the [trigger evals](../SKILL.md#trigger-evals).
 4. **Check and Sample deck:** step 5 of the flow in `SKILL.md`.
 5. **Bump and PR:** `patch` for a correction (a colour value, a rule, a calibration), `minor`
    for something new (a theme, a layout, a Deck type, new fonts).

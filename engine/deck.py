@@ -13,10 +13,12 @@
     python3 <skill>/engine/deck.py compare <old-engine> <new-engine> --brand <slug> [--out <dir>] [--json]
     python3 <skill>/engine/deck.py doctor [--report]
     python3 <skill>/engine/deck.py upgrade [--to X.Y.Z] [--check]
+    python3 <skill>/engine/deck.py eval [--runs 3] [--model <model>] [--out <dir>]
 
 Everything but the PowerPoint commands and `compare` needs only Python 3.8+. Those import
 their optional dependencies when they run, and say how to install what is missing. `upgrade`
-also needs git and `gh` 2.81 or later.
+also needs git and `gh` 2.81 or later. `eval` needs Claude Code's `claude` command, runs a live
+agent on the user's account and never publishes its report.
 Generated output never goes into the skill folder.
 """
 import argparse
@@ -29,7 +31,7 @@ if sys.version_info < (3, 8):
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
-from lib.common import DeckError  # noqa: E402
+from lib.common import SKILL, DeckError, ensure_outside_skill  # noqa: E402
 
 
 def cmd_brands(args):
@@ -66,7 +68,17 @@ def cmd_check(args):
             print(f"  error: {problem}")
         for problem in report.warnings:
             print(f"  warning: {problem}")
-    print(f"Checked {len(slugs)} Brand pack(s): {errors} error(s), {warnings} warning(s).")
+    checked = f"{len(slugs)} Brand pack(s)"
+    skill_md = SKILL / "SKILL.md"
+    if not args.brand and skill_md.is_file():
+        from lib import triggers
+        problems = triggers.check_skill(skill_md, [(n, a) for _, n, a in packs.list_packs()[0]])
+        errors += len(problems)
+        print(f"SKILL.md: {'not valid' if problems else 'valid'}, {len(problems)} error(s)")
+        for problem in problems:
+            print(f"  error: {problem}")
+        checked += " and SKILL.md"
+    print(f"Checked {checked}: {errors} error(s), {warnings} warning(s).")
     return 1 if errors else 0
 
 
@@ -128,6 +140,27 @@ def cmd_extract_pptx(args):
 def cmd_doctor(args):
     from lib import doctor
     return doctor.run(report_only=args.report)
+
+
+def cmd_eval(args):
+    """Exit 0 when every case passes, 1 when one fails, 2 when the evals could not run."""
+    from lib import packs, triggers
+    try:
+        brands = [(name, aliases) for _, name, aliases in packs.list_packs()[0]]
+        if not brands:
+            raise DeckError(f"no Brand packs in {packs.BRANDS}")
+        if args.out:
+            ensure_outside_skill(args.out, "the eval folder")
+        cases = triggers.slides_cases(SKILL.name, brands)
+        passed, results, report = triggers.run(triggers.plugin_skills(SKILL), cases, args.runs,
+                                               args.model, args.out)
+    except DeckError as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 2
+    triggers.print_results(results)
+    if report:
+        print(f"Report: {report}")
+    return 0 if passed else 1
 
 
 def cmd_upgrade(args):
@@ -211,6 +244,13 @@ def parser():
     p.add_argument("--report", action="store_true",
                    help="print a redacted environment report for a bug report")
     p.set_defaults(func=cmd_doctor)
+
+    p = sub.add_parser("eval", help="test with Claude Code that requests start this skill "
+                                    "(costs tokens)")
+    p.add_argument("--runs", type=int, default=3, help="runs per case (default 3)")
+    p.add_argument("--model", help="the model under test (default: Claude Code's)")
+    p.add_argument("--out", help="keep the eval plugin and report.json in this empty folder")
+    p.set_defaults(func=cmd_eval)
 
     p = sub.add_parser("upgrade", help="move this Slides skill to a newer Engine release in a PR")
     p.add_argument("--to", help="the release to move to (default: the newest stable release)")

@@ -50,7 +50,10 @@ PR with the failure report; `abort` undoes the upgrade. Never merge the PR: the 
 ends with steps 5 and 6. Each step ends on its gate: the next step starts only once it holds.
 
 1. **Collect material.** The user gives what they have: a PowerPoint template, guidelines as PDF,
-   a website, a logo, font files, an icon set. Copy it into `<work>/material/`.
+   a website, a logo, font files, an icon set. Copy it into `<work>/material/`. To try the
+   Generator, the material for the fictional brands `acme` and `tidewell` is in
+   `<gen>/../../examples/brand-material/`. Build the pack from that material as for any brand;
+   `<gen>/../../brands/acme` is the finished result, to compare with, not to copy.
    Gate: every file the user named is in `<work>/material/`, or they said it does not exist.
 2. **Show the brand card.** Scripts extract what is unambiguous, you read the rest, and the card
    shows every value with its source and asks only for what is missing:
@@ -96,8 +99,24 @@ python3 <gen>/tools/gen.py calibrate prepare|fit --skill-dir <skill> --brand <sl
 
 `<pack>` is a Brand pack folder: a draft in `<work>/packs/<slug>` before the skill has it, and
 `<skill>/brands/<slug>` after. The Engine's own commands (`check`, `sample`, `build`,
-`export-pptx`, `extract-pptx`, `doctor`) run through `python3 <skill>/engine/deck.py`; call them
-rather than repeating what they do.
+`export-pptx`, `extract-pptx`, `doctor`, `eval`) run through `python3 <skill>/engine/deck.py`; call
+them rather than repeating what they do.
+
+### Trigger evals
+
+`deck.py check` already checks the description for free: one line of at most 1024 characters
+that names every brand and alias and says what the skill is not for. Whenever the description
+changes, also offer the live evals, and run them only after a yes:
+
+```sh
+python3 <skill>/engine/deck.py eval
+```
+
+It runs Claude Code (`claude` 2.1.269 or later) on the maintainer's account, which costs tokens
+and takes a few minutes. It asks for a deck for each brand and alias, which must start the skill
+in at least two of three runs, and for a deck for an unknown brand and a `.pptx` fix, which must
+never start it. Its report stays local. When a case fails, propose a sharper description, set it
+with `gen.py describe`, and offer the evals again.
 
 ## Rules
 

@@ -18,7 +18,7 @@ from genlib.common import GenError  # noqa: E402
 
 import render  # noqa: E402  (on the path through genlib.common)
 
-DESCRIPTION = 'Builds on-brand slide decks for Acme ("Acme Corp"). Not for other brands.'
+DESCRIPTION = 'Builds on-brand slide decks for Acme ("Acme Corp", "Acme Inc"). Not for other brands.'
 
 
 def has(module):
