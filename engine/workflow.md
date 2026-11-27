@@ -196,6 +196,9 @@ Remove working files that are not deliverables, such as extracted slides, before
 
 ## For maintainers
 
-`deck.py check` validates the Brand packs, `deck.py sample --brand <slug>` builds the neutral Sample
-deck, and `deck.py compare <old-engine> <new-engine> --brand <slug>` compares it on two Engines.
+`deck.py check` validates the Brand packs and this skill's trigger description, `deck.py sample
+--brand <slug>` builds the neutral Sample deck, and `deck.py compare <old-engine> <new-engine>
+--brand <slug>` compares it on two Engines. After a description change, `deck.py eval` tests with
+Claude Code which requests start this skill; it costs tokens, so run it only when the maintainer
+agrees.
 The Brand pack and Playbook formats are in `docs/brand-pack.md`.

@@ -18,7 +18,7 @@ from lib import lock  # noqa: E402
 
 VALUES = {
     "skill": "acme-slides",
-    "description": 'Builds decks for Acme ("acme corp"): on brand. Not for other brands.',
+    "description": 'Builds decks for Acme ("acme corp", "acme inc"): on brand. Not for other brands.',
     "repo": "acme-example/acme-slides",
     "author": "Acme Maintainers",
 }

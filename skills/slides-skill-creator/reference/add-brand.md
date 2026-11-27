@@ -22,7 +22,7 @@ trigger description and a minor version bump, with an approved Sample deck.
    python3 <gen>/tools/gen.py describe --skill-dir <skill> --description "<text>"
    ```
    It changes the description in `SKILL.md`, the manifests, the marketplace entries and
-   `engine.lock`.
+   `engine.lock`. Offer the [trigger evals](../SKILL.md#trigger-evals).
 5. **Sample deck:** step 5 of the flow for the new brand. Build the Sample deck of every other
    brand too, and confirm with the user that they are unchanged.
 6. **Bump and PR:**
