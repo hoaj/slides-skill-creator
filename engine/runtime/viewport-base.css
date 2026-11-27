@@ -37,7 +37,7 @@ html, body { width:100%; height:100%; margin:0; overflow:hidden; background:#000
 .card-row { display:grid; grid-template-columns:repeat(var(--cols, 3), 1fr); gap:var(--gap); }
 .card-row > .card { display:grid; grid-template-rows:subgrid; grid-row:span var(--card-parts, 3);
   row-gap:var(--space-sm); padding:var(--pad-card);
-  background:var(--surface); border-radius:var(--radius); }
+  background:var(--surface); border-radius:0; }
 
 /* Reset UA margins so authored spacing (gap / margin-top) is exact and a heading's
    default top margin can't escape the slide and overflow the fixed stage.
